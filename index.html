@@ -23,6 +23,7 @@
             --border-glow: rgba(212, 175, 55, 0.3);
             --border-radius: 12px;
             --transition: all 0.3s ease;
+            --copyr: #d1c9e8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
@@ -261,7 +262,12 @@
         @media (min-width: 769px) {
             .mobile-menu-btn { display: none; }
             .config-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
         }
+
+        .copy { font-size: 12px; color: grey; text-align: center; border-top: 1px dashed var(--copyr); margin-bottom: 2rem; padding-top: 15px; }
+
+
     </style>
 </head>
 <body>
@@ -841,6 +847,7 @@
                         <a class="nav-item" onclick="UI.navigate('admin-history')">📋 Histórico</a>
                         <a class="nav-item" onclick="UI.navigate('admin-settings')">⚙️ Configurações</a>
                         <a class="nav-item" style="color: var(--red-accent)" onclick="App.logout()">🚪 Sair</a>
+                        <p class="copy">&#169 2026 Números da Sorte v1.0<br>Todos os direitos reservados<br>Maykow Roberto c097419</p>
                     `;
                 } else {
                     sb.innerHTML = `
@@ -850,6 +857,7 @@
                         <a class="nav-item" onclick="UI.navigate('my-agency')">🏢 Minha Agência</a>
                         <a class="nav-item" onclick="UI.navigate('drawn-numbers')">🎉 Números Sorteados</a>
                         <a class="nav-item" style="color: var(--red-accent)" onclick="App.logout()">🚪 Sair</a>
+                        <p class="copy">&#169 2026 Números da Sorte v1.0<br>Todos os direitos reservados<br>Maykow Roberto c097419</p>
                     `;
                 }
             }
