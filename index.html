@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Campanha de Vendas - Top Performance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* =====================================================
+           VARIÁVEIS E RESET
+        ===================================================== */
+        :root {
+            --bg-dark: #0a0c10;
+            --bg-panel: #141722;
+            --bg-card: rgba(26, 30, 44, 0.7);
+            --gold: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #ffdf73 50%, #aa7700 100%);
+            --wine: #8b0000;
+            --red-accent: #e63946;
+            --text-main: #f8f9fa;
+            --text-muted: #adb5bd;
+            --border-glow: rgba(212, 175, 55, 0.3);
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 50% 0%, #1a1c29 0%, var(--bg-dark) 60%);
+        }
+
+        /* =====================================================
+           TIPOGRAFIA E UTILITÁRIOS
+        ===================================================== */
+        h1, h2, h3, h4 { text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+        .text-gold { color: var(--gold); }
+        .text-gold-light { color: var(--gold-light); }
+        .text-center { text-align: center; }
+        .hidden { display: none !important; }
+        .flex { display: flex; }
+        .flex-col { display: flex; flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .gap-1 { gap: 8px; }
+        .gap-2 { gap: 16px; }
+        .gap-3 { gap: 24px; }
+        .w-full { width: 100%; }
+
+        /* =====================================================
+           COMPONENTES UI
+        ===================================================== */
+        .btn {
+            background: var(--gold-gradient);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4); }
+        .btn:active { transform: translateY(0); }
+        .btn-outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); }
+        .btn-outline:hover { background: rgba(212, 175, 55, 0.1); }
+        .btn-danger { background: var(--wine); color: white; box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3); }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+        .card:hover { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.1); }
+
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; margin-bottom: 8px; font-size: 0.9em; color: var(--gold-light); }
+        .input-group input, .input-group select {
+            width: 100%; padding: 12px; border-radius: 8px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border-glow);
+            color: white; font-size: 1em; transition: var(--transition);
+        }
+        .input-group input:focus, .input-group select:focus {
+            outline: none; border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+        }
+        .input-group select option { background: var(--bg-panel); color: white; }
+        
+        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; cursor: pointer; }
+        .checkbox-group input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--gold); }
+
+        /* =====================================================
+           LAYOUT PRINCIPAL E MENU
+        ===================================================== */
+        #app { display: flex; flex-direction: column; min-height: 100vh; }
+        
+        .topbar {
+            background: var(--bg-panel);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-glow);
+            position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 1.5em; font-weight: 800; background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .main-container { display: flex; flex: 1; overflow: hidden; position: relative; }
+        
+        .sidebar {
+            width: 250px; background: var(--bg-panel); border-right: 1px solid var(--border-glow);
+            padding: 20px 0; overflow-y: auto; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .nav-item {
+            padding: 12px 20px; display: flex; align-items: center; gap: 12px;
+            color: var(--text-muted); text-decoration: none; cursor: pointer; transition: var(--transition);
+        }
+        .nav-item:hover, .nav-item.active { color: var(--gold); background: rgba(212, 175, 55, 0.05); border-left: 3px solid var(--gold); }
+        
+        /* Overlay Escuro para fechar o menu no Mobile */
+        .sidebar-overlay {
+            position: fixed; top: 60px; left: 0; width: 100%; height: calc(100vh - 60px);
+            background: rgba(0,0,0,0.6); z-index: 95; backdrop-filter: blur(2px);
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .sidebar-overlay.active { opacity: 1; visibility: visible; }
+
+        .content { flex: 1; padding: 20px; overflow-y: auto; }
+        .section-title { font-size: 1.8em; color: var(--gold); margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+
+        /* =====================================================
+           DASHBOARDS E CARDS ESPECÍFICOS
+        ===================================================== */
+        .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { text-align: center; display: flex; flex-direction: column; justify-content: center; }
+        .stat-value { font-size: 3em; font-weight: 800; color: var(--gold); margin: 10px 0; line-height: 1; }
+        .stat-label { font-size: 0.9em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Ranking UI */
+        .ranking-list { display: flex; flex-direction: column; gap: 12px; }
+        .ranking-item { display: flex; align-items: center; background: rgba(0,0,0,0.3); padding: 12px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .ranking-item.top-1 { background: linear-gradient(90deg, rgba(212,175,55,0.15) 0%, rgba(0,0,0,0.3) 100%); border-left: 4px solid #FFD700; }
+        .ranking-item.top-2 { background: linear-gradient(90deg, rgba(192,192,192,0.1) 0%, rgba(0,0,0,0.3) 100%); border-left: 4px solid #C0C0C0; }
+        .ranking-item.top-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1) 0%, rgba(0,0,0,0.3) 100%); border-left: 4px solid #CD7F32; }
+        
+        .pos-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; background: var(--bg-panel); color: white; margin-right: 15px; font-size: 1.2em; }
+        .top-1 .pos-badge { background: #FFD700; color: #000; box-shadow: 0 0 10px #FFD700; }
+        .top-2 .pos-badge { background: #C0C0C0; color: #000; }
+        .top-3 .pos-badge { background: #CD7F32; color: #000; }
+
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--bg-panel); display: flex; justify-content: center; align-items: center; margin-right: 15px; border: 2px solid var(--gold); overflow: hidden; }
+        .avatar span { font-weight: bold; color: var(--gold); }
+
+        .rank-info { flex: 1; }
+        .rank-name { font-weight: bold; font-size: 1.1em; }
+        .rank-agency { font-size: 0.8em; color: var(--text-muted); }
+        .rank-score { font-size: 1.5em; font-weight: 800; color: var(--gold); }
+
+        /* Bilhetes (Números da Sorte) */
+        .tickets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .ticket {
+            background: linear-gradient(135deg, var(--bg-panel) 0%, rgba(0,0,0,0.8) 100%);
+            border: 1px dashed var(--gold); border-radius: 8px; padding: 15px; text-align: center;
+            position: relative; overflow: hidden; transition: var(--transition);
+        }
+        .ticket::before, .ticket::after {
+            content: ''; position: absolute; width: 20px; height: 20px; background: var(--bg-dark); border-radius: 50%; top: 50%; transform: translateY(-50%); border: 1px dashed var(--gold);
+        }
+        .ticket::before { left: -10px; } .ticket::after { right: -10px; }
+        .ticket-num { font-size: 1.8em; font-weight: 800; color: var(--gold-light); letter-spacing: 2px; font-family: monospace; }
+        .ticket-prod { font-size: 0.8em; color: var(--text-muted); margin-top: 5px; }
+
+        /* TICKET VENCEDOR EM DESTAQUE */
+        .ticket-winner {
+            background: var(--gold-gradient) !important;
+            border: 2px solid #fff;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            color: var(--bg-dark);
+            animation: pulseWinner 2s infinite;
+        }
+        .ticket-winner .ticket-num { color: var(--bg-dark); text-shadow: 1px 1px 0px rgba(255,255,255,0.5); }
+        .ticket-winner .ticket-prod { color: #333; font-weight: bold; }
+        .ticket-winner::before, .ticket-winner::after { border-color: #fff; background: var(--bg-dark); }
+
+        @keyframes pulseWinner {
+            0% { transform: scale(1); box-shadow: 0 0 10px rgba(212,175,55,0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(212,175,55,0.8); }
+            100% { transform: scale(1); box-shadow: 0 0 10px rgba(212,175,55,0.4); }
+        }
+
+        /* Tabelas Genéricas */
+        .table-responsive { width: 100%; overflow-x: auto; max-height: 500px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        th { color: var(--gold); text-transform: uppercase; font-size: 0.85em; letter-spacing: 1px; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* Tela de Sorteio */
+        .draw-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 50vh; text-align: center; }
+        .draw-box { background: radial-gradient(circle, rgba(212,175,55,0.2) 0%, rgba(0,0,0,0) 70%); padding: 50px; border-radius: 50%; margin-bottom: 30px; }
+        .draw-number { font-size: 6em; font-weight: 800; color: white; text-shadow: 0 0 20px var(--gold); font-family: monospace; letter-spacing: 5px; }
+        .winner-card { transform: scale(0); opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .winner-card.show { transform: scale(1); opacity: 1; }
+
+        /* Mensagens Gamificadas */
+        .gamification-banner {
+            background: linear-gradient(90deg, rgba(139,0,0,0.8) 0%, rgba(212,175,55,0.5) 100%);
+            padding: 15px 20px; border-radius: 8px; border-left: 4px solid var(--gold); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 15px; font-weight: bold; animation: pulse 2s infinite;
+        }
+
+        /* Toast Notifications */
+        #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--bg-panel); border-left: 4px solid var(--gold); padding: 15px 20px; border-radius: 4px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); animation: slideUp 0.3s ease; color: white; }
+        
+        /* SISTEMA DE MODAIS CUSTOMIZADOS */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .modal { background: var(--bg-panel); border: 1px solid var(--gold); border-radius: 12px; width: 90%; max-width: 500px; padding: 30px; box-shadow: 0 0 30px rgba(212,175,55,0.2); max-height: 90vh; overflow-y: auto;}
+        .modal-header { font-size: 1.5em; color: var(--gold); text-align: center; margin-bottom: 20px; font-weight: bold; }
+        .modal-body { margin-bottom: 25px; line-height: 1.5; }
+        .modal-actions { display: flex; justify-content: center; gap: 15px; }
+
+        /* Animações */
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); } 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); } }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade { animation: fadeIn 0.4s ease; }
+
+        /* Responsividade Mobile First -> Desktop */
+        @media (max-width: 768px) {
+            .sidebar { position: fixed; left: -250px; height: calc(100vh - 60px); top: 60px; z-index: 100; }
+            .sidebar.open { transform: translateX(250px); box-shadow: 2px 0 15px rgba(0,0,0,0.8); }
+            .mobile-menu-btn { display: block; background: none; border: none; color: var(--gold); font-size: 1.5em; cursor: pointer; }
+            .content { padding: 15px; }
+            .grid-stats { grid-template-columns: 1fr; }
+            .draw-number { font-size: 4em; }
+            
+            /* Tabela vira Cards no Mobile */
+            .responsive-table thead { display: none; }
+            .responsive-table tbody tr { display: block; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; margin-bottom: 10px; background: rgba(0,0,0,0.2); padding: 10px; }
+            .responsive-table tbody td { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; }
+            .responsive-table tbody td::before { content: attr(data-label); font-weight: bold; color: var(--gold); font-size: 0.85em; text-transform: uppercase; }
+            .responsive-table tbody td:last-child { border-bottom: none; }
+            
+            .config-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (min-width: 769px) {
+            .mobile-menu-btn { display: none; }
+            .config-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-modal" class="modal-overlay hidden">
+        <div class="modal animate-fade">
+            <div id="modal-title" class="modal-header"></div>
+            <div id="modal-content" class="modal-body"></div>
+            <div id="modal-actions" class="modal-actions"></div>
+        </div>
+    </div>
+
+    <div id="view-login" class="flex flex-col items-center justify-center w-full min-h-[100vh]" style="min-height: 100vh;">
+        <div class="card animate-fade" style="width: 100%; max-width: 400px; text-align: center; padding: 40px 20px;">
+            <h1 class="logo" style="font-size: 2em; margin-bottom: 10px;">TOP PERFORMANCE</h1>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">Campanha de Incentivo a Vendas</p>
+            
+            <form id="form-login" onsubmit="App.login(event)">
+                <div class="input-group" style="text-align: left;">
+                    <label>Login / Matrícula</label>
+                    <input type="text" id="login-user" required placeholder="Ex: admin ou joao.silva">
+                </div>
+                <div class="input-group" style="text-align: left;">
+                    <label>Senha</label>
+                    <input type="password" id="login-pass" required placeholder="***">
+                </div>
+                <button type="submit" class="btn w-full" style="margin-top: 10px;">Entrar na Campanha</button>
+            </form>
+            <div id="login-demo-info" style="margin-top: 20px; font-size: 0.8em; color: var(--gold-light); text-align: left; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
+                Carregando banco de dados local...
+            </div>
+        </div>
+    </div>
+
+    <div id="app" class="hidden">
+        <header class="topbar">
+            <div class="flex items-center gap-2">
+                <button class="mobile-menu-btn" onclick="UI.toggleSidebar()">☰</button>
+                <div class="logo">TOP PERFORMANCE</div>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="avatar" style="width: 35px; height: 35px; margin: 0;" id="topbar-avatar"><span></span></div>
+                <span id="topbar-name" style="font-weight: 600; display: none;"></span>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <nav class="sidebar" id="sidebar">
+                </nav>
+            
+            <div id="sidebar-overlay" class="sidebar-overlay" onclick="UI.closeSidebar()"></div>
+
+            <main class="content" id="main-content">
+                </main>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script>
+        // =====================================================
+        // CONFIGURAÇÕES GERAIS E UTILITÁRIOS
+        // =====================================================
+        const Utils = {
+            formatDate: (dateStr) => {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            },
+            showToast: (msg, type = 'success') => {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                if(type === 'error') toast.style.borderLeftColor = 'var(--red-accent)';
+                toast.textContent = msg;
+                container.appendChild(toast);
+                setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
+            },
+            getInitials: (name) => {
+                const parts = name.split(' ');
+                return parts.length > 1 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : parts[0].substring(0,2).toUpperCase();
+            },
+            formatTicketNumber: (num) => String(num).padStart(5, '0'),
+            
+            // Sons
+            playSound: (filename) => {
+                try {
+                    const audio = new Audio(filename);
+                    audio.play().catch(e => console.warn('Erro ao tocar som:', e));
+                } catch(e) { console.warn('Erro ao tocar som:', e); }
+            }
+        };
+
+        // =====================================================
+        // MOTOR DE CONFETES NATIVO (100% Offline e Leve)
+        // =====================================================
+        const Confetti = {
+            trigger: () => {
+                const colors = ['#d4af37', '#ffdf73', '#ffffff', '#e63946', '#8b0000'];
+                const particleCount = 120;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const conf = document.createElement('div');
+                    conf.style.position = 'fixed';
+                    conf.style.width = (Math.random() * 8 + 6) + 'px';
+                    conf.style.height = (Math.random() * 5 + 4) + 'px';
+                    conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    conf.style.top = '-20px';
+                    conf.style.left = Math.random() * 100 + 'vw';
+                    conf.style.opacity = Math.random() + 0.5;
+                    conf.style.zIndex = '100000';
+                    conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                    document.body.appendChild(conf);
+
+                    const fallDuration = Math.random() * 3 + 2.5; 
+                    const xOffset = (Math.random() - 0.5) * 300; 
+
+                    // Web Animations API
+                    conf.animate([
+                        { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                        { transform: `translate3d(${xOffset}px, 100vh, 0) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+                    ], {
+                        duration: fallDuration * 1000,
+                        easing: 'cubic-bezier(.37,0,.63,1)',
+                        fill: 'forwards'
+                    });
+
+                    setTimeout(() => conf.remove(), fallDuration * 1000);
+                }
+            }
+        };
+
+        // =====================================================
+        // BANCO LOCAL / INDEXEDDB
+        // =====================================================
+        class DataService {
+            constructor() {
+                this.dbName = 'CampaignAppDB';
+                this.version = 1;
+                this.db = null;
+            }
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('users')) db.createObjectStore('users', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('agencies')) db.createObjectStore('agencies', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('products')) db.createObjectStore('products', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('sales')) {
+                            const store = db.createObjectStore('sales', { keyPath: 'id' });
+                            store.createIndex('userId', 'userId', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains('lucky_numbers')) {
+                            const store = db.createObjectStore('lucky_numbers', { keyPath: 'id' }); 
+                            store.createIndex('userId', 'userId', { unique: false });
+                            store.createIndex('agencyId', 'agencyId', { unique: false });
+                            store.createIndex('status', 'status', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains('draws')) db.createObjectStore('draws', { keyPath: 'id' });
+                        if (!db.objectStoreNames.contains('audit_logs')) db.createObjectStore('audit_logs', { keyPath: 'id' });
+                    };
+                    request.onsuccess = (e) => { this.db = e.target.result; resolve(); };
+                    request.onerror = (e) => reject(e.target.error);
+                });
+            }
+
+            async getAll(storeName) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const req = tx.objectStore(storeName).getAll();
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+
+            async getById(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const req = tx.objectStore(storeName).get(id);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+
+            async getByIndex(storeName, indexName, value) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction(storeName, 'readonly');
+                    const req = tx.objectStore(storeName).index(indexName).getAll(value);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+
+            async save(storeName, item) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction(storeName, 'readwrite');
+                    const req = tx.objectStore(storeName).put(item);
+                    req.onsuccess = () => resolve(item);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+
+            async delete(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction(storeName, 'readwrite');
+                    const req = tx.objectStore(storeName).delete(id);
+                    req.onsuccess = () => resolve();
+                    req.onerror = () => reject(req.error);
+                });
+            }
+
+            async count(storeName) {
+                const all = await this.getAll(storeName);
+                return all.length;
+            }
+            
+            async getNextLuckyNumberSeq() {
+                const numbers = await this.getAll('lucky_numbers');
+                return numbers.length + 1;
+            }
+
+            async logAction(action, details, adminId) {
+                const log = { id: Date.now().toString(), date: new Date().toISOString(), action, details, adminId };
+                await this.save('audit_logs', log);
+            }
+
+            async getGlobalRanking() {
+                const users = await this.getAll('users');
+                const numbers = await this.getAll('lucky_numbers');
+                
+                const userCounts = {};
+                numbers.forEach(n => {
+                    if(!userCounts[n.userId]) userCounts[n.userId] = 0;
+                    userCounts[n.userId]++;
+                });
+
+                const agencies = await this.getAll('agencies');
+                const agencyMap = Object.fromEntries(agencies.map(a => [a.id, a.name]));
+
+                let rank = users.filter(u => u.role === 'seller' && u.status === 'active').map(u => ({
+                    ...u,
+                    agencyName: agencyMap[u.agencyId] || 'Desconhecida',
+                    totalNumbers: userCounts[u.id] || 0
+                }));
+                rank.sort((a, b) => b.totalNumbers - a.totalNumbers);
+                return rank.map((u, i) => ({...u, position: i + 1}));
+            }
+
+            async getAgencyRanking() {
+                const agencies = await this.getAll('agencies');
+                const numbers = await this.getAll('lucky_numbers');
+                const users = await this.getAll('users');
+                
+                const agencyCounts = {};
+                numbers.forEach(n => {
+                    if(!agencyCounts[n.agencyId]) agencyCounts[n.agencyId] = 0;
+                    agencyCounts[n.agencyId]++;
+                });
+
+                const userCounts = {};
+                users.filter(u => u.role === 'seller').forEach(u => {
+                    if(!userCounts[u.agencyId]) userCounts[u.agencyId] = 0;
+                    userCounts[u.agencyId]++;
+                });
+
+                let rank = agencies.filter(a => a.status === 'active').map(a => ({
+                    ...a,
+                    totalNumbers: agencyCounts[a.id] || 0,
+                    participants: userCounts[a.id] || 0
+                }));
+                rank.sort((a, b) => b.totalNumbers - a.totalNumbers);
+                return rank.map((a, i) => ({...a, position: i + 1}));
+            }
+        }
+
+        const db = new DataService();
+
+        // =====================================================
+        // DADOS DE DEMONSTRAÇÃO E SEEDER
+        // =====================================================
+        async function seedDemoData() {
+            const usersCount = await db.count('users');
+            if(usersCount > 0) return;
+
+            console.log("Populando banco de dados inicial...");
+            
+            const agencies = [
+                { id: 'a1', code: '1234', name: 'Agência Petrolina', status: 'active' },
+                { id: 'a2', code: '5678', name: 'Agência Juazeiro', status: 'active' },
+                { id: 'a3', code: '9012', name: 'Agência Recife', status: 'active' }
+            ];
+            for(let a of agencies) await db.save('agencies', a);
+
+            const products = [
+                { id: 'p1', name: 'Previdência', numbersPerUnit: 3, status: 'active' },
+                { id: 'p2', name: 'Consórcio', numbersPerUnit: 5, status: 'active' },
+                { id: 'p3', name: 'Residencial', numbersPerUnit: 2, status: 'active' }
+            ];
+            for(let p of products) await db.save('products', p);
+
+            await db.save('users', { id: 'u0', name: 'Administrador Master', role: 'admin', login: 'admin', password: '123', status: 'active', agencyId: null, mustChangePassword: false });
+
+            const names = ["João Silva", "Maria Oliveira", "Carlos Souza"];
+            for(let i=0; i<names.length; i++) {
+                let agId = agencies[i % 3].id;
+                let login = names[i].split(' ')[0].toLowerCase();
+                await db.save('users', { id: `u${i+1}`, name: names[i], role: 'seller', login: login, password: '123', status: 'active', agencyId: agId, mustChangePassword: false });
+            }
+
+            let seq = 1;
+            for(let i=1; i<=3; i++) {
+                let sId = `u${i}`;
+                let pId = 'p1';
+                let prod = products[0];
+                let qty = 2;
+                let numGen = qty * prod.numbersPerUnit;
+                
+                let sale = { id: `s${i}`, userId: sId, agencyId: agencies[i-1].id, productId: pId, quantity: qty, numbersGenerated: numGen, date: new Date().toISOString(), adminId: 'u0' };
+                await db.save('sales', sale);
+
+                for(let n=0; n<numGen; n++) {
+                    await db.save('lucky_numbers', {
+                        id: Utils.formatTicketNumber(seq++),
+                        userId: sale.userId, agencyId: sale.agencyId, productId: sale.productId, saleId: sale.id, date: sale.date, status: 'active', winnerNotified: false
+                    });
+                }
+            }
+        }
+
+        // =====================================================
+        // COMPONENTES DE INTERFACE
+        // =====================================================
+        const UI = {
+            toggleSidebar: () => {
+                const sb = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                if(sb.classList.contains('open')) {
+                    sb.classList.remove('open');
+                    overlay.classList.remove('active');
+                } else {
+                    sb.classList.add('open');
+                    overlay.classList.add('active');
+                }
+            },
+            closeSidebar: () => {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebar-overlay').classList.remove('active');
+            },
+
+            showModal: (title, contentHTML, buttons = []) => {
+                const overlay = document.getElementById('custom-modal');
+                document.getElementById('modal-title').innerHTML = title;
+                document.getElementById('modal-content').innerHTML = contentHTML;
+                const actions = document.getElementById('modal-actions');
+                actions.innerHTML = '';
+                
+                if(buttons.length === 0) {
+                    buttons.push({ text: 'Fechar', class: 'btn btn-outline', onClick: () => UI.closeModal() });
+                }
+
+                buttons.forEach(btn => {
+                    const b = document.createElement('button');
+                    b.className = btn.class || 'btn';
+                    b.textContent = btn.text;
+                    b.onclick = btn.onClick;
+                    actions.appendChild(b);
+                });
+                
+                overlay.classList.remove('hidden');
+            },
+            closeModal: () => {
+                document.getElementById('custom-modal').classList.add('hidden');
+            },
+            confirm: (title, text, onConfirm) => {
+                UI.showModal(title, `<p class="text-center">${text}</p>`, [
+                    { text: 'Cancelar', class: 'btn btn-outline', onClick: () => UI.closeModal() },
+                    { text: 'Confirmar', class: 'btn', onClick: () => { UI.closeModal(); onConfirm(); } }
+                ]);
+            },
+            alert: (title, text) => {
+                UI.showModal(title, `<p class="text-center">${text}</p>`, [
+                    { text: 'OK', class: 'btn', onClick: () => UI.closeModal() }
+                ]);
+            },
+            
+            navigate: async (viewName) => {
+                UI.closeSidebar(); // Recolhe menu via clique
+                const content = document.getElementById('main-content');
+                content.innerHTML = '<div class="text-center text-gold" style="margin-top:50px;">Carregando...</div>';
+                
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                const activeLink = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick') && el.getAttribute('onclick').includes(viewName));
+                if(activeLink) activeLink.classList.add('active');
+
+                try {
+                    switch(viewName) {
+                        case 'seller-dashboard': content.innerHTML = await Renderers.sellerDashboard(); break;
+                        case 'seller-numbers': content.innerHTML = await Renderers.sellerNumbers(); break;
+                        case 'global-ranking': content.innerHTML = await Renderers.globalRanking(); break;
+                        case 'agency-ranking': content.innerHTML = await Renderers.agencyRanking(); break;
+                        case 'my-agency': content.innerHTML = await Renderers.myAgency(); break;
+                        case 'drawn-numbers': content.innerHTML = await Renderers.drawnNumbers(); break;
+                        case 'admin-dashboard': content.innerHTML = await Renderers.adminDashboard(); break;
+                        case 'admin-launch-sale': content.innerHTML = await Renderers.adminLaunchSale(); break;
+                        case 'admin-draw': content.innerHTML = await Renderers.adminDraw(); break;
+                        case 'admin-history': content.innerHTML = await Renderers.adminHistory(); break;
+                        case 'admin-settings': content.innerHTML = await Renderers.adminSettings(); break;
+                        default: content.innerHTML = '<h2>Página não encontrada</h2>';
+                    }
+                } catch(e) {
+                    console.error(e);
+                    content.innerHTML = `<h3 style="color:red">Erro ao carregar tela.</h3>`;
+                }
+            },
+
+            renderPodium: (top3) => {
+                if(!top3 || top3.length === 0) return '';
+                return `
+                    <div class="card animate-fade" style="margin-bottom: 30px; background: linear-gradient(180deg, rgba(212,175,55,0.1) 0%, rgba(0,0,0,0.5) 100%);">
+                        <h3 class="text-center text-gold">👑 PÓDIO ATUAL</h3>
+                        <div class="flex justify-center items-end gap-3" style="margin-top: 30px; height: 150px;">
+                            ${top3[1] ? `<div class="text-center" style="transform: translateY(-20px)"><div class="pos-badge" style="margin: 0 auto 10px;">2</div><div class="avatar" style="margin: 0 auto; width:60px;height:60px;"><span>${Utils.getInitials(top3[1].name)}</span></div><div class="rank-name mt-2">${top3[1].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[1].totalNumbers} Nts</div></div>` : ''}
+                            ${top3[0] ? `<div class="text-center" style="transform: translateY(-50px)"><div class="pos-badge" style="margin: 0 auto 10px; width:60px;height:60px; font-size:1.5em;">1</div><div class="avatar" style="margin: 0 auto; width:80px;height:80px; border-width:3px;"><span>${Utils.getInitials(top3[0].name)}</span></div><div class="rank-name mt-2" style="font-size:1.2em;">${top3[0].name.split(' ')[0]}</div><div class="text-gold font-bold" style="font-size:1.3em;">${top3[0].totalNumbers} Nts</div></div>` : ''}
+                            ${top3[2] ? `<div class="text-center" style="transform: translateY(0px)"><div class="pos-badge" style="margin: 0 auto 10px;">3</div><div class="avatar" style="margin: 0 auto; width:50px;height:50px;"><span>${Utils.getInitials(top3[2].name)}</span></div><div class="rank-name mt-2">${top3[2].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[2].totalNumbers} Nts</div></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        // =====================================================
+        // ESTADO E AUTENTICAÇÃO
+        // =====================================================
+        const App = {
+            currentUser: null,
+            
+            async init() {
+                try {
+                    await db.init();
+                    await seedDemoData();
+                    
+                    document.getElementById('login-demo-info').innerHTML = `
+                        <strong>Acesso Demonstração:</strong><br>
+                        Admin: admin / 123<br>
+                        Vendedor: joao / 123
+                    `;
+
+                    const saved = localStorage.getItem('campaign_session');
+                    if(saved) {
+                        this.currentUser = JSON.parse(saved);
+                        this.verifyLoginRoutine();
+                    }
+                } catch(e) {
+                    console.error("Erro inicialização BD:", e);
+                    Utils.showToast("Erro ao carregar banco de dados local.", "error");
+                }
+            },
+
+            async login(e) {
+                e.preventDefault();
+                const l = document.getElementById('login-user').value.trim();
+                const p = document.getElementById('login-pass').value.trim();
+
+                const users = await db.getAll('users');
+                const user = users.find(u => u.login === l && u.password === p && u.status === 'active');
+
+                if(user) {
+                    this.currentUser = user;
+                    this.verifyLoginRoutine();
+                } else {
+                    Utils.showToast('Login/Matrícula ou senha incorretos!', 'error');
+                }
+            },
+
+            async verifyLoginRoutine() {
+                if (this.currentUser.mustChangePassword) {
+                    UI.showModal('🔒 Alterar Senha Provisória', `
+                        <p class="text-center text-muted" style="margin-bottom: 20px;">Por favor, crie uma nova senha para o seu acesso seguro.</p>
+                        <div class="input-group">
+                            <input type="password" id="new-pwd" class="w-full" placeholder="Nova Senha">
+                        </div>
+                        <div class="input-group">
+                            <input type="password" id="confirm-pwd" class="w-full" placeholder="Confirmar Senha">
+                        </div>
+                    `, [
+                        { text: 'Salvar e Entrar', class: 'btn', onClick: async () => {
+                            const np = document.getElementById('new-pwd').value;
+                            const cp = document.getElementById('confirm-pwd').value;
+                            if(!np || np !== cp) return Utils.showToast('As senhas não conferem!', 'error');
+                            
+                            this.currentUser.password = np;
+                            this.currentUser.mustChangePassword = false;
+                            await db.save('users', this.currentUser);
+                            
+                            UI.closeModal();
+                            localStorage.setItem('campaign_session', JSON.stringify(this.currentUser));
+                            this.loadApp();
+                        }}
+                    ]);
+                } else {
+                    localStorage.setItem('campaign_session', JSON.stringify(this.currentUser));
+                    this.loadApp();
+                }
+            },
+
+            logout() {
+                this.currentUser = null;
+                localStorage.removeItem('campaign_session');
+                document.getElementById('app').classList.add('hidden');
+                document.getElementById('view-login').classList.remove('hidden');
+                document.getElementById('login-pass').value = '';
+            },
+
+            async loadApp() {
+                document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('app').classList.remove('hidden');
+                
+                document.getElementById('topbar-name').textContent = this.currentUser.name;
+                document.getElementById('topbar-name').style.display = 'block';
+                document.getElementById('topbar-avatar').innerHTML = `<span>${Utils.getInitials(this.currentUser.name)}</span>`;
+
+                this.buildMenu();
+                
+                if(this.currentUser.role === 'admin') {
+                    UI.navigate('admin-dashboard');
+                } else {
+                    UI.navigate('seller-dashboard');
+                    this.checkWinnerStatus();
+                }
+            },
+
+            async checkWinnerStatus() {
+                const numbers = await db.getByIndex('lucky_numbers', 'userId', this.currentUser.id);
+                const wonNumbers = numbers.filter(n => n.status === 'drawn' && !n.winnerNotified);
+                
+                if(wonNumbers.length > 0) {
+                    // Toca som de vitória
+                    Utils.playSound('win.mp3');
+                    Confetti.trigger(); // Dispara confetes do modal
+                    
+                    const numsStr = wonNumbers.map(n => n.id).join(', ');
+                    UI.showModal('🎉 VOCÊ FOI SORTEADO! 🎉', `
+                        <div class="text-center">
+                            <div style="font-size: 4em; margin-bottom: 20px;">🏆</div>
+                            <h3 class="text-gold" style="font-size: 1.5em; margin-bottom: 10px;">Parabéns, ${this.currentUser.name}!</h3>
+                            <p>Seus seguintes números da sorte foram premiados:</p>
+                            <div style="font-size: 2.5em; font-weight: bold; font-family: monospace; color: var(--gold); margin: 20px 0; background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px;">
+                                ${numsStr}
+                            </div>
+                            <p style="color: var(--text-muted)">Acesse "Meus Números" para visualizar os detalhes do seu bilhete dourado!</p>
+                        </div>
+                    `, [
+                        { text: 'Comemorar Conquista!', class: 'btn', onClick: () => {
+                            UI.closeModal();
+                            UI.navigate('seller-numbers');
+                        }}
+                    ]);
+
+                    for(let n of wonNumbers) {
+                        n.winnerNotified = true;
+                        await db.save('lucky_numbers', n);
+                    }
+                }
+            },
+
+            buildMenu() {
+                const sb = document.getElementById('sidebar');
+                if(this.currentUser.role === 'admin') {
+                    sb.innerHTML = `
+                        <a class="nav-item" onclick="UI.navigate('admin-dashboard')">🏠 Dashboard</a>
+                        <a class="nav-item" onclick="UI.navigate('admin-launch-sale')">➕ Lançar Venda</a>
+                        <a class="nav-item" onclick="UI.navigate('global-ranking')">🏆 Ranking Geral</a>
+                        <a class="nav-item" onclick="UI.navigate('agency-ranking')">🏢 Ranking de Agências</a>
+                        <a class="nav-item" onclick="UI.navigate('admin-draw')">🎰 Sorteio</a>
+                        <a class="nav-item" onclick="UI.navigate('drawn-numbers')">🎉 Números Sorteados</a>
+                        <a class="nav-item" onclick="UI.navigate('admin-history')">📋 Histórico</a>
+                        <a class="nav-item" onclick="UI.navigate('admin-settings')">⚙️ Configurações</a>
+                        <a class="nav-item" style="color: var(--red-accent)" onclick="App.logout()">🚪 Sair</a>
+                    `;
+                } else {
+                    sb.innerHTML = `
+                        <a class="nav-item" onclick="UI.navigate('seller-dashboard')">🏠 Início</a>
+                        <a class="nav-item" onclick="UI.navigate('seller-numbers')">🎟️ Meus Números</a>
+                        <a class="nav-item" onclick="UI.navigate('global-ranking')">🏆 Ranking Geral</a>
+                        <a class="nav-item" onclick="UI.navigate('my-agency')">🏢 Minha Agência</a>
+                        <a class="nav-item" onclick="UI.navigate('drawn-numbers')">🎉 Números Sorteados</a>
+                        <a class="nav-item" style="color: var(--red-accent)" onclick="App.logout()">🚪 Sair</a>
+                    `;
+                }
+            }
+        };
+
+        // =====================================================
+        // RENDERIZADORES DE TELAS
+        // =====================================================
+        const Renderers = {
+            async sellerDashboard() {
+                const user = App.currentUser;
+                const numbers = await db.getByIndex('lucky_numbers', 'userId', user.id);
+                const rank = await db.getGlobalRanking();
+                const myRank = rank.find(r => r.id === user.id);
+                const pos = myRank ? myRank.position : '-';
+                
+                const agRank = await db.getAgencyRanking();
+                const myAgRank = agRank.find(a => a.id === user.agencyId);
+                const agPos = myAgRank ? myAgRank.position : '-';
+
+                let msg = "Venda produtos para conquistar números da sorte!";
+                if(pos <= 3) msg = "🏆 Sensacional! Você está no pódio!";
+                else if (pos <= 10) msg = "🔥 Top 10! Continue acelerando!";
+                else if (numbers.length > 0) msg = "🚀 Você está no jogo! Continue vendendo!";
+
+                return `
+                    <div class="gamification-banner"><span>${msg}</span></div>
+                    <div class="grid-stats animate-fade">
+                        <div class="card stat-card"><div class="stat-label">Meus Números</div><div class="stat-value">${numbers.length}</div></div>
+                        <div class="card stat-card"><div class="stat-label">Minha Posição Geral</div><div class="stat-value text-gold-light">${pos}º</div></div>
+                        <div class="card stat-card"><div class="stat-label">Minha Agência</div><div class="stat-value">${agPos}º <span style="font-size: 0.3em;">LUGAR</span></div></div>
+                    </div>
+                    <h2 class="section-title">Últimos Números Conquistados</h2>
+                    <div class="tickets-grid">
+                        ${numbers.slice(-6).reverse().map(n => `
+                            <div class="ticket ${n.status === 'drawn' ? 'ticket-winner' : ''}">
+                                <div class="ticket-num">${n.id}</div>
+                                <div class="ticket-prod">${n.status === 'drawn' ? '★ PREMIADO ★' : Utils.formatDate(n.date).split(' ')[0]}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${numbers.length > 6 ? `<div class="text-center mt-3"><button class="btn btn-outline" onclick="UI.navigate('seller-numbers')">Ver todos</button></div>` : ''}
+                `;
+            },
+
+            async sellerNumbers() {
+                const user = App.currentUser;
+                const numbers = await db.getByIndex('lucky_numbers', 'userId', user.id);
+                const products = await db.getAll('products');
+                const prodMap = Object.fromEntries(products.map(p => [p.id, p.name]));
+
+                const toShow = numbers.reverse().slice(0, 100); 
+
+                return `
+                    <h2 class="section-title">🎟️ Meus Números da Sorte</h2>
+                    <p style="margin-bottom: 20px;">Você possui <strong>${numbers.length}</strong> números da sorte.</p>
+                    <div class="tickets-grid animate-fade">
+                        ${toShow.length === 0 ? '<p>Nenhum número conquistado ainda.</p>' : toShow.map(n => `
+                            <div class="ticket ${n.status === 'drawn' ? 'ticket-winner' : ''}">
+                                <div class="ticket-num">${n.id}</div>
+                                <div class="ticket-prod">${n.status === 'drawn' ? '🏆 PREMIADO' : (prodMap[n.productId] || 'Produto')}<br>${Utils.formatDate(n.date)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    ${numbers.length > 100 ? `<p class="text-center text-muted" style="margin-top:20px">Mostrando os últimos 100 números.</p>` : ''}
+                `;
+            },
+
+            async globalRanking() {
+                const rank = await db.getGlobalRanking();
+                const top3 = rank.slice(0, 3);
+                
+                return `
+                    <h2 class="section-title">🏆 Ranking Geral</h2>
+                    ${UI.renderPodium(top3)}
+                    <div class="card animate-fade">
+                        <div class="ranking-list">
+                            ${rank.map((u, i) => `
+                                <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
+                                    <div class="pos-badge">${u.position}</div>
+                                    <div class="avatar"><span>${Utils.getInitials(u.name)}</span></div>
+                                    <div class="rank-info">
+                                        <div class="rank-name">${u.name} ${u.id === App.currentUser.id ? '(Você)' : ''}</div>
+                                        <div class="rank-agency">${u.agencyName}</div>
+                                    </div>
+                                    <div class="rank-score">${u.totalNumbers}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            async agencyRanking() {
+                const rank = await db.getAgencyRanking();
+                return `
+                    <h2 class="section-title">🏢 Ranking de Agências</h2>
+                    <div class="card animate-fade">
+                        <div class="ranking-list">
+                            ${rank.map((a, i) => `
+                                <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
+                                    <div class="pos-badge">${a.position}</div>
+                                    <div class="rank-info" style="margin-left: 15px;">
+                                        <div class="rank-name">${a.name} (${a.code})</div>
+                                        <div class="rank-agency">${a.participants} participantes vinculados</div>
+                                    </div>
+                                    <div class="rank-score">${a.totalNumbers}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            async myAgency() {
+                const user = App.currentUser;
+                const agencies = await db.getAll('agencies');
+                const myAgency = agencies.find(a => a.id === user.agencyId);
+                
+                const globalRank = await db.getGlobalRanking();
+                const agencyUsersRank = globalRank.filter(u => u.agencyId === user.agencyId);
+                agencyUsersRank.forEach((u, i) => u.agencyPos = i + 1);
+
+                return `
+                    <h2 class="section-title">🏢 ${myAgency ? myAgency.name : 'Minha Agência'}</h2>
+                    <div class="card animate-fade">
+                        <p class="text-gold" style="margin-bottom: 20px;">Ranking interno dos participantes desta agência.</p>
+                        <div class="ranking-list">
+                            ${agencyUsersRank.map((u, i) => `
+                                <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
+                                    <div class="pos-badge">${u.agencyPos}</div>
+                                    <div class="avatar"><span>${Utils.getInitials(u.name)}</span></div>
+                                    <div class="rank-info">
+                                        <div class="rank-name">${u.name} ${u.id === user.id ? '(Você)' : ''}</div>
+                                        <div class="rank-agency">Posição Global: ${u.position}º</div>
+                                    </div>
+                                    <div class="rank-score">${u.totalNumbers}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            },
+
+            async drawnNumbers() {
+                const draws = await db.getAll('draws');
+                const users = await db.getAll('users');
+                const agencies = await db.getAll('agencies');
+                const products = await db.getAll('products');
+                
+                const prodMap = Object.fromEntries(products.map(p => [p.id, p.name]));
+                const userMap = Object.fromEntries(users.map(u => [u.id, u.name]));
+                const agencyMap = Object.fromEntries(agencies.map(a => [a.id, a.name]));
+
+                const lns = await db.getAll('lucky_numbers');
+                const lnMap = Object.fromEntries(lns.map(l => [l.id, l]));
+
+                draws.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+                return `
+                    <h2 class="section-title">🎉 Números Sorteados</h2>
+                    <div class="tickets-grid animate-fade">
+                        ${draws.length === 0 ? '<p>Nenhum sorteio realizado ainda.</p>' : draws.map((d, i) => {
+                            const ln = lnMap[d.luckyNumber] || {};
+                            return `
+                            <div class="card" style="text-align:center; border-color: var(--gold); padding: 30px 15px;">
+                                <div class="text-muted" style="margin-bottom: 10px; font-size: 0.8em;">Sorteio #${draws.length - i}</div>
+                                <div class="ticket-num" style="font-size: 2.5em; margin-bottom: 15px;">${d.luckyNumber}</div>
+                                <div class="font-bold" style="font-size: 1.1em; color: var(--gold);">${userMap[d.userId] || 'Desconhecido'}</div>
+                                <div class="text-muted" style="font-size: 0.8em; margin-bottom: 10px;">${agencyMap[d.agencyId] || ''}</div>
+                                <div style="font-size: 0.7em; background: rgba(255,255,255,0.1); padding: 5px; border-radius: 4px;">
+                                    ${prodMap[ln.productId] || ''} <br> ${Utils.formatDate(d.date)}
+                                </div>
+                            </div>
+                        `}).join('')}
+                    </div>
+                `;
+            },
+
+            // --- TELAS ADMIN ---
+            async adminDashboard() {
+                const users = await db.getAll('users');
+                const ags = await db.getAll('agencies');
+                const sales = await db.getAll('sales');
+                const lns = await db.getAll('lucky_numbers');
+                const draws = await db.getAll('draws');
+
+                const sellers = users.filter(u => u.role === 'seller' && u.status === 'active');
+
+                return `
+                    <h2 class="section-title">Visão Geral da Campanha</h2>
+                    <div class="grid-stats animate-fade">
+                        <div class="card stat-card"><div class="stat-label">Participantes</div><div class="stat-value">${sellers.length}</div></div>
+                        <div class="card stat-card"><div class="stat-label">Agências</div><div class="stat-value">${ags.length}</div></div>
+                        <div class="card stat-card"><div class="stat-label">Lançamentos (Vendas)</div><div class="stat-value">${sales.length}</div></div>
+                        <div class="card stat-card"><div class="stat-label">Números Distribuídos</div><div class="stat-value">${lns.length}</div></div>
+                        <div class="card stat-card"><div class="stat-label">Sorteios Realizados</div><div class="stat-value">${draws.length}</div></div>
+                    </div>
+                    <div class="flex gap-3" style="flex-wrap: wrap;">
+                        <button class="btn" onclick="UI.navigate('admin-launch-sale')">➕ Lançar Venda Rápida</button>
+                        <button class="btn btn-outline" onclick="UI.navigate('admin-draw')">🎰 Realizar Sorteio</button>
+                    </div>
+                `;
+            },
+
+            async adminLaunchSale() {
+                const users = await db.getAll('users');
+                const products = await db.getAll('products');
+                
+                const sellers = users.filter(u => u.role === 'seller' && u.status === 'active').sort((a,b) => a.name.localeCompare(b.name));
+                const prodsActive = products.filter(p => p.status === 'active');
+
+                window.calcPreviewNumbers = () => {
+                    const pId = document.getElementById('sale-product').value;
+                    const qty = parseInt(document.getElementById('sale-qty').value || 0);
+                    if(!pId || qty <= 0) {
+                        document.getElementById('sale-preview').innerHTML = ''; return;
+                    }
+                    const p = prodsActive.find(x => x.id === pId);
+                    const total = qty * p.numbersPerUnit;
+                    document.getElementById('sale-preview').innerHTML = `
+                        <div style="background: rgba(212,175,55,0.1); padding: 15px; border-radius: 8px; border: 1px dashed var(--gold); text-align: center; margin-bottom: 20px;">
+                            <span style="font-size: 0.9em; color: var(--text-muted)">${qty} × ${p.name} (${p.numbersPerUnit} pts/unid)</span><br>
+                            <span style="font-size: 1.5em; font-weight: bold; color: var(--gold)">+${total} NÚMEROS DA SORTE</span>
+                        </div>
+                    `;
+                };
+
+                window.processSale = async (e) => {
+                    e.preventDefault();
+                    const btn = document.getElementById('btn-confirm-sale');
+                    btn.disabled = true; btn.textContent = 'Processando...';
+
+                    try {
+                        const uId = document.getElementById('sale-user').value;
+                        const pId = document.getElementById('sale-product').value;
+                        const qty = parseInt(document.getElementById('sale-qty').value);
+                        
+                        const u = sellers.find(x => x.id === uId);
+                        const p = prodsActive.find(x => x.id === pId);
+                        const totalNums = qty * p.numbersPerUnit;
+
+                        const sale = { id: 's'+Date.now(), userId: u.id, agencyId: u.agencyId, productId: p.id, quantity: qty, numbersGenerated: totalNums, date: new Date().toISOString(), adminId: App.currentUser.id };
+                        await db.save('sales', sale);
+
+                        let startSeq = await db.getNextLuckyNumberSeq();
+                        for(let i=0; i<totalNums; i++) {
+                            await db.save('lucky_numbers', {
+                                id: Utils.formatTicketNumber(startSeq++),
+                                userId: u.id, agencyId: u.agencyId, productId: p.id, saleId: sale.id, date: sale.date, status: 'active', winnerNotified: false
+                            });
+                        }
+
+                        await db.logAction('SALE_ADDED', `Venda de ${qty} ${p.name} para o participante ${u.name}. Gerados ${totalNums} números.`, App.currentUser.id);
+
+                        Utils.showToast(`${totalNums} números gerados com sucesso para ${u.name}!`);
+                        UI.navigate('admin-launch-sale'); 
+                    } catch (error) {
+                        Utils.showToast("Erro ao lançar venda.", "error");
+                        btn.disabled = false; btn.textContent = 'Confirmar Lançamento';
+                    }
+                };
+
+                return `
+                    <h2 class="section-title">➕ Lançar Venda</h2>
+                    <div class="card animate-fade" style="max-width: 600px; margin: 0 auto;">
+                        <form onsubmit="processSale(event)">
+                            <div class="input-group">
+                                <label>Participante (Vendedor)</label>
+                                <select id="sale-user" required>
+                                    <option value="">Selecione...</option>
+                                    ${sellers.map(u => `<option value="${u.id}">${u.name} (Mat: ${u.login})</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Produto Vendido</label>
+                                <select id="sale-product" required onchange="calcPreviewNumbers()">
+                                    <option value="">Selecione...</option>
+                                    ${prodsActive.map(p => `<option value="${p.id}">${p.name} (${p.numbersPerUnit} nºs por unidade)</option>`).join('')}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Quantidade Vendida</label>
+                                <input type="number" id="sale-qty" min="1" max="1000" required onkeyup="calcPreviewNumbers()" onchange="calcPreviewNumbers()">
+                            </div>
+                            <div id="sale-preview"></div>
+                            <button type="submit" id="btn-confirm-sale" class="btn w-full">Confirmar Lançamento</button>
+                        </form>
+                    </div>
+                `;
+            },
+
+            async adminHistory() {
+                const logs = await db.getAll('audit_logs');
+                const users = await db.getAll('users');
+                const adminMap = Object.fromEntries(users.map(u => [u.id, u.name]));
+                
+                logs.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+                return `
+                    <h2 class="section-title">📋 Histórico de Operações (Auditoria)</h2>
+                    <div class="card animate-fade table-responsive">
+                        <table class="responsive-table">
+                            <thead>
+                                <tr>
+                                    <th>Data / Hora</th>
+                                    <th>Ação</th>
+                                    <th>Detalhes</th>
+                                    <th>Responsável</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${logs.slice(0,100).map(l => `
+                                    <tr>
+                                        <td data-label="Data">${Utils.formatDate(l.date)}</td>
+                                        <td data-label="Ação"><span style="background:rgba(212,175,55,0.2); padding: 4px 8px; border-radius: 4px; font-size:0.8em">${l.action}</span></td>
+                                        <td data-label="Detalhes">${l.details}</td>
+                                        <td data-label="Resp.">${adminMap[l.adminId] || 'Sistema'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            },
+
+            async adminDraw() {
+                const lns = await db.getAll('lucky_numbers');
+                const actives = lns.filter(n => n.status === 'active');
+
+                window.startDraw = async () => {
+                    if(actives.length === 0) {
+                        return UI.alert('Aviso', 'Não há números válidos para sorteio neste momento.');
+                    }
+                    
+                    UI.confirm('Atenção', 'Iniciar Sorteio Oficial? Esta ação não poderá ser desfeita.', async () => {
+                        // Toca o som tadaa.mp3 ao confirmar o sorteio
+                        Utils.playSound('tadaa.mp3');
+                        
+                        const btn = document.getElementById('btn-draw');
+                        btn.style.display = 'none';
+                        
+                        const drawBox = document.getElementById('draw-anim-box');
+                        const numDisplay = document.getElementById('draw-num-display');
+                        const winnerCard = document.getElementById('winner-card');
+                        winnerCard.classList.remove('show');
+
+                        let counter = 0;
+                        let interval = setInterval(() => {
+                            numDisplay.textContent = Utils.formatTicketNumber(Math.floor(Math.random() * 99999));
+                            counter++;
+                            if(counter > 30) {
+                                clearInterval(interval);
+                                processWinner();
+                            }
+                        }, 100);
+
+                        const processWinner = async () => {
+                            const randomIndex = Math.floor(Math.random() * actives.length);
+                            const winnerNum = actives[randomIndex];
+
+                            winnerNum.status = 'drawn';
+                            winnerNum.winnerNotified = false; 
+                            await db.save('lucky_numbers', winnerNum);
+
+                            const drawRecord = { id: 'd'+Date.now(), luckyNumber: winnerNum.id, userId: winnerNum.userId, agencyId: winnerNum.agencyId, date: new Date().toISOString(), adminId: App.currentUser.id };
+                            await db.save('draws', drawRecord);
+                            
+                            const u = await db.getById('users', winnerNum.userId);
+                            await db.logAction('DRAW_PERFORMED', `Sorteio do número ${winnerNum.id} pertencente ao participante ${u.name}.`, App.currentUser.id);
+
+                            const a = await db.getById('agencies', winnerNum.agencyId);
+                            const p = await db.getById('products', winnerNum.productId);
+
+                            numDisplay.textContent = winnerNum.id;
+                            numDisplay.style.color = '#ffdf73';
+                            numDisplay.style.animation = 'pulse 1s infinite';
+
+                            document.getElementById('w-name').textContent = u.name;
+                            document.getElementById('w-agency').textContent = a ? a.name : 'Agência Desconhecida';
+                            document.getElementById('w-prod').textContent = `Origem: ${p.name}`;
+
+                            winnerCard.classList.add('show');
+                            btn.style.display = 'inline-flex';
+                            btn.textContent = 'Realizar Novo Sorteio';
+                            
+                            actives.splice(randomIndex, 1); 
+
+                            // EFEITO DE CONFETES NATIVO
+                            Confetti.trigger();
+                        };
+                    });
+                };
+
+                return `
+                    <h2 class="section-title">🎰 Painel de Sorteio</h2>
+                    <div class="card animate-fade text-center" style="margin-bottom: 20px;">
+                        <p>Números Válidos Participantes: <strong class="text-gold" style="font-size: 1.2em;">${actives.length}</strong></p>
+                    </div>
+
+                    <div class="draw-container animate-fade">
+                        <div class="draw-box" id="draw-anim-box">
+                            <div class="draw-number" id="draw-num-display">00000</div>
+                        </div>
+                        
+                        <div id="winner-card" class="winner-card card" style="text-align:center; border: 2px solid var(--gold); background: linear-gradient(180deg, rgba(212,175,55,0.2) 0%, rgba(0,0,0,0.8) 100%); margin-bottom: 30px; min-width: 300px;">
+                            <h3 style="color: var(--gold-light); margin-bottom: 5px;">🎉 NÚMERO PREMIADO! 🎉</h3>
+                            <div id="w-name" style="font-size: 1.5em; font-weight: bold; margin: 10px 0;"></div>
+                            <div id="w-agency" class="text-muted"></div>
+                            <div id="w-prod" style="font-size: 0.8em; margin-top: 10px; color: var(--gold);"></div>
+                        </div>
+
+                        <button id="btn-draw" class="btn" style="font-size: 1.2em; padding: 15px 40px;" onclick="startDraw()">🎰 SORTEAR NÚMERO</button>
+                    </div>
+                `;
+            },
+
+            // =====================================================
+            // ADMIN SETTINGS - com gestão de Agências
+            // =====================================================
+            async adminSettings() {
+                const users = await db.getAll('users');
+                const products = await db.getAll('products');
+                const agencies = await db.getAll('agencies');
+                
+                const activeProds = products.filter(p => p.status === 'active');
+                const activeUsers = users.filter(u => u.status === 'active');
+                const activeAgencies = agencies.filter(a => a.status === 'active');
+
+                // AÇÕES DE PRODUTOS
+                window.openAddProduct = () => {
+                    UI.showModal('📦 Novo Produto', `
+                        <div class="input-group"><input type="text" id="prod-name" placeholder="Nome do Produto"></div>
+                        <div class="input-group"><input type="number" id="prod-pts" placeholder="Números por Unidade Vendida" min="1"></div>
+                    `, [
+                        { text: 'Salvar', class: 'btn', onClick: async () => {
+                            const name = document.getElementById('prod-name').value.trim();
+                            const pts = parseInt(document.getElementById('prod-pts').value);
+                            if(!name || !pts) return Utils.showToast('Preencha os campos', 'error');
+                            await db.save('products', { id: 'p'+Date.now(), name, numbersPerUnit: pts, status: 'active' });
+                            UI.closeModal(); UI.navigate('admin-settings'); Utils.showToast('Produto Adicionado!');
+                        }}
+                    ]);
+                };
+
+                window.openEditProduct = (id, name, pts) => {
+                    UI.showModal('✏️ Editar Produto', `
+                        <div class="input-group"><input type="text" id="eprod-name" value="${name}"></div>
+                        <div class="input-group"><input type="number" id="eprod-pts" value="${pts}" min="1"></div>
+                    `, [
+                        { text: 'Salvar', class: 'btn', onClick: async () => {
+                            const nName = document.getElementById('eprod-name').value.trim();
+                            const nPts = parseInt(document.getElementById('eprod-pts').value);
+                            if(!nName || !nPts) return;
+                            const p = await db.getById('products', id);
+                            p.name = nName; p.numbersPerUnit = nPts;
+                            await db.save('products', p);
+                            UI.closeModal(); UI.navigate('admin-settings'); Utils.showToast('Produto Atualizado!');
+                        }}
+                    ]);
+                };
+
+                window.deleteProduct = (id, name) => {
+                    UI.confirm('Excluir Produto', `Tem certeza que deseja excluir o produto <b>${name}</b>?`, async () => {
+                        const p = await db.getById('products', id);
+                        p.status = 'deleted';
+                        await db.save('products', p);
+                        UI.navigate('admin-settings'); Utils.showToast('Produto Removido!');
+                    });
+                };
+
+                // AÇÕES DE AGÊNCIAS
+                window.openAddAgency = () => {
+                    UI.showModal('🏢 Nova Agência', `
+                        <div class="input-group"><input type="text" id="ag-name" placeholder="Nome da Agência"></div>
+                        <div class="input-group"><input type="text" id="ag-code" placeholder="Código (4 dígitos)" maxlength="4" pattern="[0-9]{4}"></div>
+                    `, [
+                        { text: 'Salvar', class: 'btn', onClick: async () => {
+                            const name = document.getElementById('ag-name').value.trim();
+                            const code = document.getElementById('ag-code').value.trim();
+                            if(!name || !code || code.length !== 4 || !/^\d{4}$/.test(code)) 
+                                return Utils.showToast('Preencha o nome e um código de 4 dígitos.', 'error');
+                            // Verifica se código já existe
+                            const all = await db.getAll('agencies');
+                            if(all.find(a => a.code === code)) return Utils.showToast('Código já cadastrado!', 'error');
+                            await db.save('agencies', { id: 'a'+Date.now(), code, name, status: 'active' });
+                            UI.closeModal(); UI.navigate('admin-settings'); Utils.showToast('Agência Adicionada!');
+                        }}
+                    ]);
+                };
+
+                window.openEditAgency = (id, code, name) => {
+                    UI.showModal('✏️ Editar Agência', `
+                        <div class="input-group"><input type="text" id="eag-name" value="${name}"></div>
+                        <div class="input-group"><input type="text" id="eag-code" value="${code}" maxlength="4" pattern="[0-9]{4}"></div>
+                    `, [
+                        { text: 'Salvar', class: 'btn', onClick: async () => {
+                            const nName = document.getElementById('eag-name').value.trim();
+                            const nCode = document.getElementById('eag-code').value.trim();
+                            if(!nName || !nCode || nCode.length !== 4 || !/^\d{4}$/.test(nCode))
+                                return Utils.showToast('Preencha nome e código de 4 dígitos.', 'error');
+                            const a = await db.getById('agencies', id);
+                            // Verifica se código já existe (exceto o próprio)
+                            const all = await db.getAll('agencies');
+                            if(all.find(ag => ag.code === nCode && ag.id !== id)) 
+                                return Utils.showToast('Código já cadastrado!', 'error');
+                            a.name = nName; a.code = nCode;
+                            await db.save('agencies', a);
+                            UI.closeModal(); UI.navigate('admin-settings'); Utils.showToast('Agência Atualizada!');
+                        }}
+                    ]);
+                };
+
+                window.deleteAgency = (id, name) => {
+                    UI.confirm('Excluir Agência', `Tem certeza que deseja excluir a agência <b>${name}</b>?<br><small>Os participantes vinculados a ela serão desassociados.</small>`, async () => {
+                        const ag = await db.getById('agencies', id);
+                        ag.status = 'deleted';
+                        await db.save('agencies', ag);
+                        // Opcional: atualizar usuários que tenham essa agência para null?
+                        const users = await db.getAll('users');
+                        for(let u of users) {
+                            if(u.agencyId === id) {
+                                u.agencyId = null;
+                                await db.save('users', u);
+                            }
+                        }
+                        UI.navigate('admin-settings'); Utils.showToast('Agência Removida!');
+                    });
+                };
+
+                // AÇÕES DE USUÁRIOS
+                window.openAddUser = () => {
+                    // Prepara as opções das agências (apenas ativas)
+                    const activeAgencies = agencies.filter(a => a.status === 'active');
+                    const agencyOptions = activeAgencies.map(a => `<option value="${a.id}">${a.name} (${a.code})</option>`).join('');
+
+                    UI.showModal('👤 Novo Usuário', `
+                        <div class="input-group"><input type="text" id="u-name" placeholder="Nome Completo"></div>
+                        <div class="input-group"><input type="text" id="u-mat" placeholder="Matrícula (Usado para Login)"></div>
+                        <div class="input-group" id="u-ag-container">
+                            <select id="u-ag">
+                                <option value="">Selecione a Agência...</option>
+                                ${agencyOptions}
+                            </select>
+                        </div>
+                        <div class="input-group"><input type="text" id="u-pwd" placeholder="Senha Provisória"></div>
+                        <label class="checkbox-group">
+                            <input type="checkbox" id="u-admin" onchange="document.getElementById('u-ag-container').style.display = this.checked ? 'none' : 'block'"> 
+                            <span>Conceder acesso de Administrador</span>
+                        </label>
+                    `, [
+                        { text: 'Cancelar', class: 'btn btn-outline', onClick: () => UI.closeModal() },
+                        { text: 'Cadastrar', class: 'btn', onClick: async () => {
+                            try {
+                                const name = document.getElementById('u-name').value.trim();
+                                const login = document.getElementById('u-mat').value.trim();
+                                const pwd = document.getElementById('u-pwd').value.trim();
+                                const isAdmin = document.getElementById('u-admin').checked;
+                                const agencyId = document.getElementById('u-ag').value;
+
+                                if(!name || !login || !pwd) return Utils.showToast('Nome, Matrícula e Senha são obrigatórios.', 'error');
+                                
+                                let finalAgencyId = null;
+                                if(!isAdmin) {
+                                    if(!agencyId) return Utils.showToast('Selecione uma agência!', 'error');
+                                    finalAgencyId = agencyId;
+                                }
+
+                                const exists = await db.getAll('users');
+                                if(exists.find(x => x.login === login)) return Utils.showToast('Matrícula já cadastrada!', 'error');
+
+                                await db.save('users', {
+                                    id: 'u'+Date.now(), name, login, password: pwd, role: isAdmin ? 'admin' : 'seller',
+                                    status: 'active', agencyId: finalAgencyId, mustChangePassword: true
+                                });
+
+                                await db.logAction('USER_ADDED', `Participante ${name} (Mat: ${login}) cadastrado.`, App.currentUser.id);
+                                UI.closeModal(); 
+                                UI.navigate('admin-settings'); 
+                                Utils.showToast('Usuário Cadastrado com Sucesso!');
+                            } catch(err) {
+                                console.error(err);
+                                Utils.showToast('Erro ao cadastrar usuário', 'error');
+                            }
+                        }}
+                    ]);
+                };
+
+                window.deleteUser = (id, name) => {
+                    UI.confirm('Desativar Usuário', `Tem certeza que deseja desativar o participante <b>${name}</b>?`, async () => {
+                        const u = await db.getById('users', id);
+                        u.status = 'inactive';
+                        await db.save('users', u);
+                        UI.navigate('admin-settings'); Utils.showToast('Usuário Desativado!');
+                    });
+                };
+
+                return `
+                    <h2 class="section-title">⚙️ Configurações</h2>
+                    <div class="config-grid animate-fade">
+                        
+                        <!-- PRODUTOS -->
+                        <div class="card" style="display: flex; flex-direction: column;">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3>📦 Produtos</h3>
+                                <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8em;" onclick="openAddProduct()">+ Novo</button>
+                            </div>
+                            <div class="table-responsive" style="flex: 1;">
+                                <table class="responsive-table">
+                                    <thead><tr><th>Produto</th><th>Números/Unid.</th><th>Ação</th></tr></thead>
+                                    <tbody>
+                                        ${activeProds.map(p => `
+                                            <tr>
+                                                <td data-label="Produto">${p.name}</td>
+                                                <td data-label="Números/Unid.">${p.numbersPerUnit}</td>
+                                                <td data-label="Ação">
+                                                    <button class="btn btn-outline" style="padding: 4px 8px; font-size:0.8em; margin-right:5px;" onclick="openEditProduct('${p.id}', '${p.name}', ${p.numbersPerUnit})">✎</button>
+                                                    <button class="btn btn-danger" style="padding: 4px 8px; font-size:0.8em;" onclick="deleteProduct('${p.id}', '${p.name}')">✗</button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- AGÊNCIAS -->
+                        <div class="card" style="display: flex; flex-direction: column;">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3>🏢 Agências</h3>
+                                <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8em;" onclick="openAddAgency()">+ Nova</button>
+                            </div>
+                            <div class="table-responsive" style="flex: 1;">
+                                <table class="responsive-table">
+                                    <thead><tr><th>Código</th><th>Nome</th><th>Ação</th></tr></thead>
+                                    <tbody>
+                                        ${activeAgencies.map(a => `
+                                            <tr>
+                                                <td data-label="Código">${a.code}</td>
+                                                <td data-label="Nome">${a.name}</td>
+                                                <td data-label="Ação">
+                                                    <button class="btn btn-outline" style="padding: 4px 8px; font-size:0.8em; margin-right:5px;" onclick="openEditAgency('${a.id}', '${a.code}', '${a.name}')">✎</button>
+                                                    <button class="btn btn-danger" style="padding: 4px 8px; font-size:0.8em;" onclick="deleteAgency('${a.id}', '${a.name}')">✗</button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- USUÁRIOS -->
+                        <div class="card" style="display: flex; flex-direction: column;">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3>👥 Usuários do Sistema</h3>
+                                <button class="btn btn-outline" style="padding: 5px 10px; font-size: 0.8em;" onclick="openAddUser()">+ Novo</button>
+                            </div>
+                            <div class="table-responsive" style="flex: 1;">
+                                <table class="responsive-table">
+                                    <thead><tr><th>Nome</th><th>Matrícula</th><th>Perfil</th><th>Ação</th></tr></thead>
+                                    <tbody>
+                                        ${activeUsers.map(u => `
+                                            <tr>
+                                                <td data-label="Nome">${u.name}</td>
+                                                <td data-label="Matrícula">${u.login}</td>
+                                                <td data-label="Perfil">${u.role === 'admin' ? '<span class="text-gold">Admin</span>' : 'Vendedor'}</td>
+                                                <td data-label="Ação">
+                                                    ${u.id !== App.currentUser.id ? `<button class="btn btn-danger" style="padding: 4px 8px; font-size:0.8em;" onclick="deleteUser('${u.id}', '${u.name}')">Inativar</button>` : '<span class="text-muted">Você</span>'}
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                `;
+            }
+        };
+
+        // =====================================================
+        // INICIALIZAÇÃO
+        // =====================================================
+        window.onload = () => {
+            App.init();
+        };
+
+    </script>
+</body>
+</html>
