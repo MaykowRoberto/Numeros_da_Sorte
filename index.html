@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Campanha de Vendas - Conquista Seguridade</title>
+    <title>Conquista</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1f74">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Tabler Icons -->
@@ -121,8 +129,14 @@
         }
         .input-group input[type="file"] { padding: 8px; background: #fff; }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; cursor: pointer; color: var(--blue-dark); font-weight: 600; }
-        .checkbox-group input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--gold); }
+        
+        /* Toggle Switch para Biometria */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        input:checked + .slider { background-color: #2e7d32; }
+        input:checked + .slider:before { transform: translateX(24px); }
 
         /* Accordion Customizado */
         .accordion { border: 1px solid var(--border-glow); border-radius: var(--border-radius); overflow: hidden; margin-bottom: 20px; background: #ffffff; box-shadow: 0 4px 15px rgba(13, 31, 116, 0.05); }
@@ -137,9 +151,9 @@
         #app { display: flex; flex-direction: column; min-height: 100vh; }
         
         .topbar {
-            background: #ffffff; padding: 15px 20px; display: flex; justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95); padding: 15px 20px; display: flex; justify-content: space-between;
             align-items: center; border-bottom: 2px solid var(--blue-light); position: sticky; top: 0; z-index: 100;
-            box-shadow: 0 2px 10px rgba(13, 31, 116, 0.05);
+            box-shadow: 0 2px 10px rgba(13, 31, 116, 0.05); backdrop-filter: blur(10px);
         }
         .topbar-brand { font-size: 1.3em; font-weight: 800; color: var(--blue-dark); display: flex; align-items: center; gap: 10px; }
         
@@ -158,7 +172,7 @@
         
         .sidebar-overlay {
             position: fixed; top: 65px; left: 0; width: 100%; height: calc(100vh - 65px);
-            background: rgba(13, 31, 116, 0.6); z-index: 95; backdrop-filter: blur(2px);
+            background: rgba(13, 31, 116, 0.6); z-index: 95; backdrop-filter: blur(4px);
             opacity: 0; visibility: hidden; transition: all 0.3s ease;
         }
         .sidebar-overlay.active { opacity: 1; visibility: visible; }
@@ -248,8 +262,8 @@
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 99999 !important; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: var(--blue-dark); border-left: 4px solid var(--gold); padding: 15px 20px; border-radius: 4px; box-shadow: 0 5px 15px rgba(13,31,116,0.5); animation: slideUp 0.3s ease; color: white; font-weight: 600; display:flex; align-items:center; gap: 10px; }
         
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(13,31,116,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
-        .modal { background: #ffffff; border: 2px solid var(--gold); border-radius: 12px; width: 100%; max-width: 500px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(13,31,116,0.8); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .modal { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: 2px solid var(--gold); border-radius: 12px; width: 100%; max-width: 500px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
         .modal-header { font-size: 1.5em; color: var(--blue-dark); text-align: center; margin-bottom: 20px; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #f2f2f4; padding-bottom: 10px; display:flex; justify-content:center; align-items:center; gap: 10px;}
         .modal-body { margin-bottom: 25px; line-height: 1.5; color: var(--blue-dark); }
         .modal-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
@@ -295,7 +309,7 @@
 
     <!-- TELA DE LOGIN -->
     <div id="view-login" class="flex flex-col items-center justify-center w-full min-h-[100vh]" style="min-height: 100vh;">
-        <div class="card animate-fade" style="width: 100%; max-width: 420px; text-align: center; padding: 40px 30px; box-shadow: 0 10px 30px rgba(13,31,116,0.1);">
+        <div class="card animate-fade" style="width: 100%; max-width: 420px; text-align: center; padding: 40px 30px; box-shadow: 0 10px 30px rgba(13,31,116,0.1); background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
             <img src="logo.png" alt="Conquista Seguridade" onerror="this.style.display='none'" style="max-width: 100%; height: auto; width: 300px; margin: 0 auto 20px; display: block;">
             <h2 class="text-blue-dark">CONQUISTA SEGURIDADE</h2>
             <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 600;">Campanha de Incentivo a Vendas</p>
@@ -311,6 +325,18 @@
                 </div>
                 <button type="submit" id="btn-login-submit" class="btn w-full" style="margin-top: 15px; font-size: 1.1em;"><i class="ti ti-login"></i> Entrar na Campanha</button>
             </form>
+        </div>
+    </div>
+
+    <!-- TELA DE DESBLOQUEIO POR BIOMETRIA -->
+    <div id="view-unlock" class="flex flex-col items-center justify-center w-full min-h-[100vh] hidden" style="min-height: 100vh;">
+        <div class="card animate-fade" style="width: 100%; max-width: 380px; text-align: center; padding: 40px 30px; box-shadow: 0 10px 30px rgba(13,31,116,0.1); background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 5px solid var(--gold);">
+            <div id="unlock-avatar-container" style="display:flex; justify-content:center; margin-bottom:20px;"></div>
+            <h2 class="text-blue-dark" style="margin-bottom: 5px;">Bem-vindo(a) de volta!</h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 600;">Toque abaixo para desbloquear o acesso de forma segura.</p>
+            
+            <button onclick="App.unlockBiometric()" class="btn w-full" style="font-size: 1.2em; padding: 15px; border-radius: 50px;"><i class="ti ti-fingerprint" style="font-size: 1.8em;"></i> Desbloquear</button>
+            <button onclick="App.logout()" class="btn-outline w-full mt-3" style="border:none; color: var(--text-muted); font-weight:600;"><i class="ti ti-logout"></i> Sair da Conta</button>
         </div>
     </div>
 
@@ -335,6 +361,74 @@
 
     <script>
         // =====================================================
+        // REGISTRO DO SERVICE WORKER (PWA)
+        // =====================================================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./pw.js')
+                    .then(reg => console.log('PWA: Service Worker registrado com sucesso!'))
+                    .catch(err => console.log('PWA: Erro ao registrar Service Worker', err));
+            });
+        }
+
+        // =====================================================
+        // MÓDULO DE BIOMETRIA (WebAuthn Local App Lock)
+        // =====================================================
+        const Biometrics = {
+            isSupported: () => window.PublicKeyCredential !== undefined,
+            
+            enable: async (username) => {
+                try {
+                    const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
+                    const userId = new Uint8Array(16); window.crypto.getRandomValues(userId);
+
+                    const cred = await navigator.credentials.create({
+                        publicKey: {
+                            challenge: challenge,
+                            rp: { name: "Conquista App" },
+                            user: { id: userId, name: username, displayName: username },
+                            pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+                            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                            timeout: 60000,
+                        }
+                    });
+                    
+                    if(cred) {
+                        localStorage.setItem('bio_credential_id', btoa(String.fromCharCode(...new Uint8Array(cred.rawId))));
+                        localStorage.setItem('bio_enabled', 'true');
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Erro na biometria:', e);
+                    return false;
+                }
+            },
+
+            unlock: async () => {
+                try {
+                    const challenge = new Uint8Array(32); window.crypto.getRandomValues(challenge);
+                    const savedId = localStorage.getItem('bio_credential_id');
+                    if(!savedId) return false;
+                    
+                    const credId = Uint8Array.from(atob(savedId), c => c.charCodeAt(0));
+
+                    const assertion = await navigator.credentials.get({
+                        publicKey: {
+                            challenge: challenge,
+                            allowCredentials: [{ type: "public-key", id: credId }],
+                            userVerification: "required",
+                            timeout: 60000
+                        }
+                    });
+                    return !!assertion;
+                } catch (e) {
+                    console.error('Erro ao desbloquear:', e);
+                    return false;
+                }
+            }
+        };
+
+        // =====================================================
         // SUPABASE CLIENT INITIALIZATION
         // =====================================================
         const supabaseUrl = 'https://nhltfxpsqbhbxqbcuqwj.supabase.co';
@@ -351,11 +445,9 @@
                 return data || [];
             },
             getById: async (table, id) => {
-                 // Usar maybeSingle() impede o erro 406 caso retorne 0 linhas
                  const { data } = await supabaseClient.from(table).select('*').eq('id', id).maybeSingle();
                  return data;
             },
-            
             getByIndex: async (table, col, val) => {
                  const { data } = await supabaseClient.from(table).select('*').eq(col, val);
                  return data || [];
@@ -394,7 +486,6 @@
 
                 const agencyMap = Object.fromEntries(agencies.map(a => [a.id, a.name]));
 
-                // Filtra apenas vendedores (exclui admins e observers do ranking)
                 let rank = users.filter(u => u.role === 'seller' && u.status === 'active').map(u => ({
                     ...u,
                     agencyName: agencyMap[u.agency_id] || 'Desconhecida',
@@ -470,15 +561,13 @@
                     audio.play().catch(() => {});
                 } catch(e) {}
             },
-            // Função universal para renderizar avatar com ou sem foto
             renderAvatarHtml: (name, url, size = 45, border = 2) => {
                 if(url) return `<div class="avatar" style="width:${size}px; height:${size}px; border-width:${border}px;"><img src="${url}" alt="Foto"></div>`;
                 return `<div class="avatar" style="width:${size}px; height:${size}px; border-width:${border}px;"><span>${Utils.getInitials(name)}</span></div>`;
             },
-            // Verifica permissão (Observadores não podem alterar)
             checkPermission: () => {
                 if(App.currentUser.role === 'observer') {
-                    Utils.showToast('Acesso Negado: Como Observador, você pode visualizar mas não pode fazer alterações ou sorteios no sistema.', 'error');
+                    Utils.showToast('Acesso Negado: Observadores possuem somente leitura.', 'error');
                     return false;
                 }
                 return true;
@@ -513,49 +602,32 @@
             }
         };
 
-        // Gerenciador da Contagem Regressiva
         const CampaignTimer = {
-            endDate: null,
-            timerInterval: null,
-            msgInterval: null,
-            
+            endDate: null, timerInterval: null, msgInterval: null,
             init: async () => {
                 const config = await DB.getById('campaign_settings', 1);
-                if(config && config.end_date) {
-                    CampaignTimer.endDate = new Date(config.end_date).getTime();
-                } else {
-                    CampaignTimer.endDate = null;
-                }
+                if(config && config.end_date) CampaignTimer.endDate = new Date(config.end_date).getTime();
+                else CampaignTimer.endDate = null;
             },
-
             getPhaseInfo: (diff) => {
                 if (diff <= 0) return { title: "🏁 CAMPANHA ENCERRADA", color: "#8b0000", bg: "#8b0000", msgs: ["Obrigado pela participação e empenho!", "Os resultados estão definidos."] };
-                
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
                 const minutes = Math.floor((diff / 1000 / 60) % 60);
 
-                if (days >= 15) return { title: "🟢 Campanha em Andamento", color: "#2e7d32", bg: "linear-gradient(90deg, #1b5e20 0%, #2e7d32 100%)", msgs: ["🚀 A campanha está só começando. Cada venda faz diferença!", "🎟️ Cada número conquistado aumenta suas chances. Continue avançando!", "🔥 O jogo começou! Quanto mais vende, mais acumula.", "🏆 O pódio ainda está aberto. Comece a construir sua vantagem!"]};
-                if (days >= 8) return { title: `🟡 FALTAM ${days} DIAS`, color: "#f57f17", bg: "linear-gradient(90deg, #f57f17 0%, #f9a825 100%)", msgs: ["🔥 A reta final está se aproximando. Hora de acelerar!", "🏆 O ranking pode mudar muito nos próximos dias.", "🎟️ Cada nova venda pode aproximar você do prêmio!", "⚡ Ainda dá tempo de subir muitas posições.", "👀 Quem está no topo já está olhando para trás... e você pode estar chegando!"]};
-                if (days >= 3) return { title: `🟠 FALTAM ${days} DIAS`, color: "#e65100", bg: "linear-gradient(90deg, #e65100 0%, #ef6c00 100%)", msgs: ["🚨 ÚLTIMA SEMANA!", "🔥 Agora é hora de acelerar.", "🏆 A semana decisiva começou!", "⚡ Dias para mudar sua posição no ranking!", "🚀 A reta final começou. Quem vai terminar no topo?"]};
-                if (days >= 1) return { title: `🔴 FALTAM ${days} DIAS`, color: "#c62828", bg: "linear-gradient(90deg, #b71c1c 0%, #c62828 100%)", msgs: ["🔥 A disputa está pegando fogo!", "🎯 É agora! Cada venda conta.", "🏆 O pódio está ao alcance. Não pare agora!", "🎟️ Mais uma venda. Mais números. Mais chances.", "🚨 A contagem regressiva começou de verdade!"]};
-                if (hours >= 6) return { title: "🚨 ÚLTIMAS 24 HORAS!", color: "#b71c1c", bg: "linear-gradient(90deg, #8b0000 0%, #b71c1c 100%)", msgs: ["🔥 É AGORA! Restam apenas horas!", "🎟️ Cada número conquistado pode ser decisivo.", "🏆 Última chance de subir no ranking!", "⚡ O relógio está correndo. Aproveite cada oportunidade!", "🎯 Seu próximo número pode fazer toda a diferença."]};
-                if (hours >= 1) return { title: "🔥 ÚLTIMAS 6 HORAS!", color: "#d50000", bg: "linear-gradient(90deg, #ff0000 0%, #d50000 100%)", msgs: ["🚨 O tempo está acabando!", "🔥 Agora é tudo ou nada!", "🎟️ Ainda dá tempo de conquistar mais números!", "🏆 Quem vai terminar no topo?", "⚡ A última arrancada começou!"]};
-                if (minutes >= 10) return { title: "🚨 ÚLTIMA HORA!", color: "#ff0000", bg: "linear-gradient(90deg, #000000 0%, #ff0000 100%)", msgs: ["🔥 ÚLTIMA HORA!", "🚨 O relógio está correndo!", "🎟️ Últimos números da campanha!", "🏆 É a sua última chance de subir no ranking!", "🎯 Quem será que termina no topo?"]};
+                if (days >= 15) return { title: "🟢 Campanha em Andamento", color: "#2e7d32", bg: "linear-gradient(90deg, #1b5e20 0%, #2e7d32 100%)", msgs: ["🚀 A campanha está só começando!", "🎟️ Cada número conquistado aumenta suas chances.", "🔥 Quanto mais vende, mais acumula.", "🏆 O pódio ainda está aberto!"]};
+                if (days >= 8) return { title: `🟡 FALTAM ${days} DIAS`, color: "#f57f17", bg: "linear-gradient(90deg, #f57f17 0%, #f9a825 100%)", msgs: ["🔥 A reta final está se aproximando.", "🏆 O ranking pode mudar muito.", "🎟️ Cada nova venda aproxima você do prêmio!", "⚡ Ainda dá tempo de subir posições."]};
+                if (days >= 3) return { title: `🟠 FALTAM ${days} DIAS`, color: "#e65100", bg: "linear-gradient(90deg, #e65100 0%, #ef6c00 100%)", msgs: ["🚨 ÚLTIMA SEMANA!", "🔥 Agora é hora de acelerar.", "🏆 A semana decisiva começou!", "🚀 A reta final começou!"]};
+                if (days >= 1) return { title: `🔴 FALTAM ${days} DIAS`, color: "#c62828", bg: "linear-gradient(90deg, #b71c1c 0%, #c62828 100%)", msgs: ["🔥 A disputa está pegando fogo!", "🎯 É agora! Cada venda conta.", "🏆 O pódio está ao alcance!", "🚨 A contagem regressiva começou!"]};
+                if (hours >= 6) return { title: "🚨 ÚLTIMAS 24 HORAS!", color: "#b71c1c", bg: "linear-gradient(90deg, #8b0000 0%, #b71c1c 100%)", msgs: ["🔥 É AGORA! Restam apenas horas!", "🎟️ Cada número pode ser decisivo.", "🏆 Última chance de subir!"]};
+                if (hours >= 1) return { title: "🔥 ÚLTIMAS 6 HORAS!", color: "#d50000", bg: "linear-gradient(90deg, #ff0000 0%, #d50000 100%)", msgs: ["🚨 O tempo está acabando!", "🔥 Agora é tudo ou nada!", "⚡ A última arrancada começou!"]};
+                if (minutes >= 10) return { title: "🚨 ÚLTIMA HORA!", color: "#ff0000", bg: "linear-gradient(90deg, #000000 0%, #ff0000 100%)", msgs: ["🔥 ÚLTIMA HORA!", "🚨 O relógio está correndo!", "🏆 Última chance!"]};
                 return { title: "⚡ ÚLTIMOS MINUTOS!", color: "#ff0000", bg: "linear-gradient(90deg, #000000 0%, #d50000 100%)", msgs: ["⚡ CORRA!", "🎯 O TEMPO ACABOU!", "🔥 É AGORA OU NUNCA!"]};
             },
-
             render: () => {
                 if(!CampaignTimer.endDate) return '';
-                return `
-                    <div id="campaign-banner" class="gamification-banner">
-                        <div id="cb-title" class="countdown-title">Calculando...</div>
-                        <div id="cb-time" class="countdown-time">--:--:--</div>
-                        <div id="cb-msg" class="countdown-msg">Prepare-se!</div>
-                    </div>
-                `;
+                return `<div id="campaign-banner" class="gamification-banner"><div id="cb-title" class="countdown-title">Calculando...</div><div id="cb-time" class="countdown-time">--:--:--</div><div id="cb-msg" class="countdown-msg">Prepare-se!</div></div>`;
             },
-
             start: () => {
                 if(!CampaignTimer.endDate) return;
                 if(CampaignTimer.timerInterval) clearInterval(CampaignTimer.timerInterval);
@@ -567,82 +639,47 @@
                 const bannerEl = document.getElementById('campaign-banner');
 
                 if(!titleEl) return;
+                let msgIndex = 0; let currentPhase = null;
 
-                let msgIndex = 0;
-                let currentPhase = null;
-
-                // Temporizador 1: Relógio (roda a cada 1s)
                 CampaignTimer.timerInterval = setInterval(() => {
-                    const now = new Date().getTime();
-                    const diff = CampaignTimer.endDate - now;
-                    
+                    const now = new Date().getTime(); const diff = CampaignTimer.endDate - now;
                     const phase = CampaignTimer.getPhaseInfo(diff);
                     if(!currentPhase || currentPhase.title !== phase.title) {
-                        currentPhase = phase;
-                        titleEl.innerText = phase.title;
-                        bannerEl.style.background = phase.bg;
-                        msgEl.innerText = phase.msgs[msgIndex % phase.msgs.length];
+                        currentPhase = phase; titleEl.innerText = phase.title;
+                        bannerEl.style.background = phase.bg; msgEl.innerText = phase.msgs[msgIndex % phase.msgs.length];
                     }
-
                     if(diff <= 0) {
                         timeEl.innerText = "00:00:00";
-                        clearInterval(CampaignTimer.timerInterval);
-                        clearInterval(CampaignTimer.msgInterval);
+                        clearInterval(CampaignTimer.timerInterval); clearInterval(CampaignTimer.msgInterval);
                         return;
                     }
-
                     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
                     timeEl.innerText = `${days > 0 ? days + 'd ' : ''}${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
                 }, 1000);
 
-                // Temporizador 2: Mensagens (roda a cada 5s)
                 CampaignTimer.msgInterval = setInterval(() => {
-                    // Recalcula o diff dentro deste escopo para evitar o ReferenceError
-                    const now = new Date().getTime();
-                    const diff = CampaignTimer.endDate - now; 
-
+                    const now = new Date().getTime(); const diff = CampaignTimer.endDate - now; 
                     if(currentPhase && diff > 0) {
-                        msgIndex++;
-                        msgEl.innerText = currentPhase.msgs[msgIndex % currentPhase.msgs.length];
+                        msgIndex++; msgEl.innerText = currentPhase.msgs[msgIndex % currentPhase.msgs.length];
                     }
                 }, 5000);
             }
         };
 
-        // =====================================================
-        // COMPONENTES DE INTERFACE
-        // =====================================================
         const UI = {
-            toggleSidebar: () => {
-                const sb = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebar-overlay');
-                sb.classList.toggle('open');
-                overlay.classList.toggle('active');
-            },
-            closeSidebar: () => {
-                document.getElementById('sidebar').classList.remove('open');
-                document.getElementById('sidebar-overlay').classList.remove('active');
-            },
-            toggleAccordion: (headerElement) => {
-                headerElement.classList.toggle('active');
-                const content = headerElement.nextElementSibling;
-                content.classList.toggle('active');
-            },
+            toggleSidebar: () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('active'); },
+            closeSidebar: () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); },
+            toggleAccordion: (h) => { h.classList.toggle('active'); h.nextElementSibling.classList.toggle('active'); },
             showModal: (title, contentHTML, buttons = []) => {
                 const overlay = document.getElementById('custom-modal');
-                document.getElementById('modal-title').innerHTML = title;
-                document.getElementById('modal-content').innerHTML = contentHTML;
-                const actions = document.getElementById('modal-actions');
-                actions.innerHTML = '';
-                
+                document.getElementById('modal-title').innerHTML = title; document.getElementById('modal-content').innerHTML = contentHTML;
+                const actions = document.getElementById('modal-actions'); actions.innerHTML = '';
                 if(buttons.length === 0) buttons.push({ text: 'Fechar', class: 'btn btn-outline', onClick: () => UI.closeModal() });
                 buttons.forEach(btn => {
-                    const b = document.createElement('button');
-                    b.className = btn.class || 'btn'; b.innerHTML = btn.text; b.onclick = btn.onClick; actions.appendChild(b);
+                    const b = document.createElement('button'); b.className = btn.class || 'btn'; b.innerHTML = btn.text; b.onclick = btn.onClick; actions.appendChild(b);
                 });
                 overlay.classList.remove('hidden');
             },
@@ -653,14 +690,11 @@
                     { text: '<i class="ti ti-check"></i> Confirmar', class: 'btn', onClick: () => { UI.closeModal(); onConfirm(); } }
                 ]);
             },
-            alert: (title, text) => {
-                UI.showModal(title, `<p class="text-center">${text}</p>`, [{ text: 'OK', class: 'btn', onClick: () => UI.closeModal() }]);
-            },
+            alert: (title, text) => UI.showModal(title, `<p class="text-center">${text}</p>`, [{ text: 'OK', class: 'btn', onClick: () => UI.closeModal() }]),
             navigate: async (viewName) => {
                 UI.closeSidebar(); 
                 const content = document.getElementById('main-content');
                 content.innerHTML = '<div class="text-center text-gold mt-3 font-bold"><i class="ti ti-loader ti-spin" style="font-size:2em;"></i><br>Carregando...</div>';
-                
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 const activeLink = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick') && el.getAttribute('onclick').includes(viewName));
                 if(activeLink) activeLink.classList.add('active');
@@ -682,7 +716,7 @@
                         case 'my-profile': content.innerHTML = await Renderers.myProfile(); break;
                         default: content.innerHTML = '<h2>Página não encontrada</h2>';
                     }
-                    CampaignTimer.start(); // Reinicia os timers da view atual
+                    CampaignTimer.start();
                 } catch(e) {
                     console.error(e); content.innerHTML = `<h3 style="color:red"><i class="ti ti-alert-triangle"></i> Erro ao carregar tela.</h3>`;
                 }
@@ -702,9 +736,6 @@
             }
         };
 
-        // =====================================================
-        // ESTADO E AUTENTICAÇÃO
-        // =====================================================
         const App = {
             currentUser: null,
             
@@ -714,10 +745,31 @@
                     const user = await DB.getById('users', session.user.id);
                     if(user && user.status === 'active') {
                         this.currentUser = user;
-                        this.verifyLoginRoutine();
+                        
+                        // Sistema de Bloqueio por Biometria
+                        if (localStorage.getItem('bio_enabled') === 'true' && Biometrics.isSupported()) {
+                            document.getElementById('view-login').classList.add('hidden');
+                            document.getElementById('app').classList.add('hidden');
+                            
+                            document.getElementById('unlock-avatar-container').innerHTML = Utils.renderAvatarHtml(user.name, user.avatar_url, 80, 4);
+                            document.getElementById('view-unlock').classList.remove('hidden');
+                            this.unlockBiometric(); // Tenta abrir o modal nativo imediatamente
+                        } else {
+                            this.verifyLoginRoutine();
+                        }
                     } else {
                         this.logout();
                     }
+                }
+            },
+
+            async unlockBiometric() {
+                const success = await Biometrics.unlock();
+                if(success) {
+                    document.getElementById('view-unlock').classList.add('hidden');
+                    this.verifyLoginRoutine();
+                } else {
+                    Utils.showToast('Autenticação cancelada ou falhou. Tente novamente.', 'error');
                 }
             },
 
@@ -728,7 +780,6 @@
 
                 let loginInput = document.getElementById('login-user').value.trim().toLowerCase();
                 const passInput = document.getElementById('login-pass').value.trim();
-
                 let email = loginInput.includes('@') ? loginInput : `${loginInput}@conquista.app`;
 
                 const { data, error } = await supabaseClient.auth.signInWithPassword({ email: email, password: passInput });
@@ -764,22 +815,15 @@
                             onClick: async () => {
                                 const np = document.getElementById('new-pwd').value;
                                 const cp = document.getElementById('confirm-pwd').value;
-                                
                                 if(!np || np !== cp) return Utils.showToast('As senhas não conferem!', 'error');
                                 if(np.length < 6) return Utils.showToast('A senha precisa ter no mínimo 6 dígitos!', 'error');
                                 
                                 const { error } = await supabaseClient.auth.updateUser({ password: np });
-                                if (error) return Utils.showToast('Erro ao atualizar senha no servidor.', 'error');
+                                if (error) return Utils.showToast('Erro ao atualizar senha.', 'error');
 
-                                const { error: dbError } = await supabaseClient.from('users')
-                                    .update({ must_change_password: false })
-                                    .eq('id', this.currentUser.id);
-                                    
-                                if (dbError) return Utils.showToast('Erro ao confirmar nova senha.', 'error');
-
+                                await supabaseClient.from('users').update({ must_change_password: false }).eq('id', this.currentUser.id);
                                 this.currentUser.must_change_password = false;
-                                UI.closeModal();
-                                this.loadApp();
+                                UI.closeModal(); this.loadApp();
                             }
                         },
                         { text: 'Cancelar', class: 'btn btn-outline', onClick: () => { UI.closeModal(); this.logout(); } }
@@ -793,21 +837,21 @@
                 await supabaseClient.auth.signOut();
                 this.currentUser = null;
                 document.getElementById('app').classList.add('hidden');
+                document.getElementById('view-unlock').classList.add('hidden');
                 document.getElementById('view-login').classList.remove('hidden');
                 document.getElementById('login-pass').value = '';
             },
 
             async loadApp() {
                 document.getElementById('view-login').classList.add('hidden');
+                document.getElementById('view-unlock').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
                 
-                // Configuração da Topbar com Avatar
                 document.getElementById('topbar-profile').innerHTML = `
                     ${Utils.renderAvatarHtml(this.currentUser.name, this.currentUser.avatar_url, 40)}
                     <span style="font-weight: 700; color: var(--blue-dark);">${this.currentUser.name}</span>
                 `;
 
-                // Inicializa Configurações de Data
                 await CampaignTimer.init();
                 this.buildMenu();
                 
@@ -825,7 +869,6 @@
                 
                 if(wonNumbers.length > 0) {
                     Utils.playSound('win.mp3'); Confetti.trigger();
-                    
                     const numsStr = wonNumbers.map(n => n.id).join(', ');
                     UI.showModal('🎉 VOCÊ FOI SORTEADO! 🎉', `
                         <div class="text-center">
@@ -835,14 +878,11 @@
                             <div style="font-size: 2.5em; font-weight: bold; font-family: monospace; color: var(--gold); margin: 20px 0; background: rgba(212,175,55,0.1); border: 1px dashed var(--gold); padding: 15px; border-radius: 8px;">
                                 ${numsStr}
                             </div>
-                            <p style="color: var(--text-muted)">Acesse "Meus Números" para visualizar os detalhes do seu bilhete dourado!</p>
+                            <p style="color: var(--text-muted)">Acesse "Meus Números" para visualizar os detalhes!</p>
                         </div>
                     `, [{ text: '<i class="ti ti-confetti"></i> Comemorar Conquista!', class: 'btn', onClick: () => { UI.closeModal(); UI.navigate('seller-numbers'); } }]);
 
-                    // UPDATE direto via client para o vendedor (sem RLS Insert trigger)
-                    for(let n of wonNumbers) {
-                        await supabaseClient.from('lucky_numbers').update({ winner_notified: true }).eq('id', n.id);
-                    }
+                    for(let n of wonNumbers) { await supabaseClient.from('lucky_numbers').update({ winner_notified: true }).eq('id', n.id); }
                 }
             },
 
@@ -881,9 +921,6 @@
             }
         };
 
-        // =====================================================
-        // RENDERIZADORES
-        // =====================================================
         const Renderers = {
             async sellerDashboard() {
                 const user = App.currentUser;
@@ -892,7 +929,6 @@
                 const myRank = rank.find(r => r.id === user.id);
                 const pos = myRank ? myRank.position : '-';
                 const totalVal = myRank ? myRank.totalValue : 0;
-                
                 const agRank = await DB.getAgencyRanking();
                 const myAgRank = agRank.find(a => a.id === user.agency_id);
                 const agPos = myAgRank ? myAgRank.position : '-';
@@ -976,50 +1012,58 @@
                     const btn = document.getElementById('btn-save-avatar');
                     const fileInput = document.getElementById('my-new-photo');
 
-                    if (!fileInput.files || fileInput.files.length === 0) {
-                        return Utils.showToast('Selecione uma imagem primeiro.', 'error');
-                    }
-
-                    btn.disabled = true;
-                    btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Enviando...';
+                    if (!fileInput.files || fileInput.files.length === 0) return Utils.showToast('Selecione uma imagem.', 'error');
+                    btn.disabled = true; btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Enviando...';
 
                     try {
                         const file = fileInput.files[0];
-                        const ext = file.name.split('.').pop();
-                        const fileName = `${user.id}_${Date.now()}.${ext}`;
-
-                        // Faz o upload para o Storage do Supabase (bucket 'avatars')
+                        const fileName = `${user.id}_${Date.now()}.${file.name.split('.').pop()}`;
                         const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(fileName, file);
                         if (uploadError) throw uploadError;
 
-                        // Pega a URL pública gerada
-                        const publicUrlData = supabaseClient.storage.from('avatars').getPublicUrl(fileName);
-                        const newAvatarUrl = publicUrlData.data.publicUrl;
+                        const newAvatarUrl = supabaseClient.storage.from('avatars').getPublicUrl(fileName).data.publicUrl;
+                        await supabaseClient.from('users').update({ avatar_url: newAvatarUrl }).eq('id', user.id);
 
-                        // Atualiza a tabela users
-                        const { error: updateError } = await supabaseClient
-                            .from('users')
-                            .update({ avatar_url: newAvatarUrl })
-                            .eq('id', user.id);
-
-                        if (updateError) throw updateError;
-
-                        // Atualiza o estado global da sessão e a Topbar
                         App.currentUser.avatar_url = newAvatarUrl;
-                        document.getElementById('topbar-profile').innerHTML = `
-                            ${Utils.renderAvatarHtml(user.name, newAvatarUrl, 40)}
-                            <span style="font-weight: 700; color: var(--blue-dark);">${user.name}</span>
-                        `;
-
-                        Utils.showToast('Foto de perfil atualizada com sucesso!');
-                        UI.navigate('my-profile');
+                        document.getElementById('topbar-profile').innerHTML = `${Utils.renderAvatarHtml(user.name, newAvatarUrl, 40)} <span style="font-weight: 700; color: var(--blue-dark);">${user.name}</span>`;
+                        Utils.showToast('Foto de perfil atualizada!'); UI.navigate('my-profile');
                     } catch (err) {
-                        console.error(err);
-                        Utils.showToast('Erro ao enviar foto.', 'error');
-                        btn.disabled = false;
-                        btn.innerHTML = '<i class="ti ti-device-floppy"></i> Salvar Nova Foto';
+                        Utils.showToast('Erro ao enviar foto.', 'error'); btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy"></i> Salvar Nova Foto';
                     }
                 };
+
+                window.toggleBiometrics = async (el) => {
+                    if(el.checked) {
+                        const success = await Biometrics.enable(user.name);
+                        if(success) Utils.showToast('Desbloqueio por Biometria Habilitado!');
+                        else { el.checked = false; Utils.showToast('Operação cancelada ou não suportada.', 'error'); }
+                    } else {
+                        localStorage.removeItem('bio_enabled'); localStorage.removeItem('bio_credential_id');
+                        Utils.showToast('Biometria desativada com sucesso.');
+                    }
+                };
+
+                const isBioEnabled = localStorage.getItem('bio_enabled') === 'true';
+                const bioSupport = Biometrics.isSupported();
+                let bioHtml = '';
+                
+                if(bioSupport) {
+                    bioHtml = `
+                        <div style="margin-top: 25px; border-top: 1px dashed var(--border-glow); padding-top: 20px; text-align:left;">
+                            <h4 class="text-blue-dark" style="margin-bottom: 10px;"><i class="ti ti-fingerprint"></i> Segurança Local</h4>
+                            <div class="flex justify-between items-center bg-gray-50" style="background: #f9f9fa; padding: 15px; border-radius: 8px; border: 1px solid var(--blue-light);">
+                                <div>
+                                    <span style="font-weight: 700; color: var(--blue-dark); display:block;">Desbloqueio Biométrico</span>
+                                    <span style="font-size: 0.8em; color: var(--text-muted); font-weight:600;">Requer FaceID ou TouchID</span>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="toggle-bio" ${isBioEnabled ? 'checked' : ''} onchange="toggleBiometrics(this)">
+                                    <span class="slider round"></span>
+                                </label>
+                            </div>
+                        </div>
+                    `;
+                }
 
                 return `
                     <h2 class="section-title"><i class="ti ti-user-circle"></i> Meu Perfil</h2>
@@ -1042,6 +1086,8 @@
                             </div>
                             <button type="submit" id="btn-save-avatar" class="btn w-full"><i class="ti ti-device-floppy"></i> Salvar Nova Foto</button>
                         </form>
+                        
+                        ${bioHtml}
                     </div>
                 `;
             },
@@ -1049,7 +1095,6 @@
             async globalRanking() {
                 const rank = await DB.getGlobalRanking();
                 const top3 = rank.slice(0, 3);
-                
                 return `
                     <h2 class="section-title">🏆 Ranking Geral</h2>
                     ${UI.renderPodium(top3)}
@@ -1112,13 +1157,10 @@
                     const uStats = {};
                     pSales.forEach(s => {
                         if(!uStats[s.user_id]) uStats[s.user_id] = { value: 0, nums: 0 };
-                        uStats[s.user_id].value += s.value;
-                        uStats[s.user_id].nums += s.numbers_generated;
+                        uStats[s.user_id].value += s.value; uStats[s.user_id].nums += s.numbers_generated;
                     });
 
-                    const rank = Object.keys(uStats).map(uid => ({
-                        user: userMap[uid], value: uStats[uid].value, nums: uStats[uid].nums
-                    })).filter(r => r.user && r.user.role === 'seller').sort((a,b) => b.value - a.value).slice(0, 10); 
+                    const rank = Object.keys(uStats).map(uid => ({ user: userMap[uid], value: uStats[uid].value, nums: uStats[uid].nums })).filter(r => r.user && r.user.role === 'seller').sort((a,b) => b.value - a.value).slice(0, 10); 
 
                     html += `
                         <div class="card animate-fade" style="margin-bottom: 20px;">
@@ -1467,13 +1509,11 @@
                 const allUsers = users.sort((a, b) => a.name.localeCompare(b.name));
                 const activeAgencies = agencies.filter(a => a.status === 'active');
 
-                // Helper Upload Foto
                 const handlePhotoUpload = async (userId, fileElementId) => {
                     const el = document.getElementById(fileElementId);
                     if(el && el.files.length > 0) {
                         const file = el.files[0];
-                        const ext = file.name.split('.').pop();
-                        const fileName = `${userId}_${Date.now()}.${ext}`;
+                        const fileName = `${userId}_${Date.now()}.${file.name.split('.').pop()}`;
                         await supabaseClient.storage.from('avatars').upload(fileName, file);
                         const url = supabaseClient.storage.from('avatars').getPublicUrl(fileName).data.publicUrl;
                         await supabaseClient.from('users').update({ avatar_url: url }).eq('id', userId);
@@ -1586,7 +1626,6 @@
                             const { error } = await supabaseClient.rpc('create_app_user', { p_email: email, p_password: pwd, p_name: name, p_login: login, p_role: role, p_agency_id: agId || null });
                             if(error) return Utils.showToast('Erro: ' + error.message, 'error');
 
-                            // Obter ID criado para subir foto
                             const { data: newUser } = await supabaseClient.from('users').select('id').eq('login', login).single();
                             if(newUser) await handlePhotoUpload(newUser.id, 'u-photo');
 
@@ -1671,14 +1710,13 @@
                         const end = document.getElementById('camp-end').value;
                         await DB.save('campaign_settings', { id: 1, start_date: start || null, end_date: end || null });
                         Utils.showToast('Datas salvas!');
-                        await CampaignTimer.init(); // Refresh timers globally
+                        await CampaignTimer.init();
                     } catch (e) {
                         Utils.showToast('Erro ao salvar datas.', 'error');
                     }
                     btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy"></i> Salvar Datas';
                 };
 
-                // Formatar valores para datetime-local do HTML5
                 const formatForInput = (d) => {
                     if(!d) return '';
                     const date = new Date(d);
@@ -1686,14 +1724,12 @@
                     return date.toISOString().slice(0,16);
                 };
 
-                // Função Auxiliar para Texto de Perfis
                 const getRoleBadge = (role) => {
                     if(role === 'admin') return '<span class="text-gold font-bold">Admin</span>';
                     if(role === 'observer') return '<span class="text-muted font-bold"><i class="ti ti-eye"></i> Obs.</span>';
                     return 'Vendedor';
                 };
 
-                // ---------- RENDER DOS ACCORDIONS E TABELAS ----------
                 return `
                     <h2 class="section-title"><i class="ti ti-settings"></i> Configurações</h2>
                     <div class="config-grid animate-fade">
