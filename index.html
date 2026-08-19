@@ -328,15 +328,21 @@
         </div>
     </div>
 
-    <!-- TELA DE DESBLOQUEIO POR BIOMETRIA -->
+    
+    <!-- TELA DE DESBLOQUEIO (QUICK LOGIN) -->
     <div id="view-unlock" class="flex flex-col items-center justify-center w-full min-h-[100vh] hidden" style="min-height: 100vh;">
-        <div class="card animate-fade" style="width: 100%; max-width: 380px; text-align: center; padding: 40px 30px; box-shadow: 0 10px 30px rgba(13,31,116,0.1); background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-top: 5px solid var(--gold);">
-            <div id="unlock-avatar-container" style="display:flex; justify-content:center; margin-bottom:20px;"></div>
-            <h2 class="text-blue-dark" style="margin-bottom: 5px;">Bem-vindo(a) de volta!</h2>
-            <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 600;">Toque abaixo para desbloquear o acesso de forma segura.</p>
+        <div class="card animate-fade" style="width: 100%; max-width: 400px; text-align: center; padding: 40px 30px; box-shadow: 0 10px 30px rgba(13,31,116,0.1); background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
+            <div id="unlock-avatar-container" style="display:flex; justify-content:center; margin-bottom:15px;"></div>
+            <h2 class="text-blue-dark" style="margin-bottom: 5px; font-size: 1.5em;">Olá, <span id="unlock-user-name"></span></h2>
+            <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 600; font-size: 0.9em;">Confirme sua identidade para acessar a campanha.</p>
             
-            <button onclick="App.unlockBiometric()" class="btn w-full" style="font-size: 1.2em; padding: 15px; border-radius: 50px;"><i class="ti ti-fingerprint" style="font-size: 1.8em;"></i> Desbloquear</button>
-            <button onclick="App.logout()" class="btn-outline w-full mt-3" style="border:none; color: var(--text-muted); font-weight:600;"><i class="ti ti-logout"></i> Sair da Conta</button>
+            <button onclick="App.unlockBiometric()" class="btn w-full" style="font-size: 1.1em; padding: 15px; border-radius: 12px; margin-bottom: 15px; background: var(--blue-dark); color: white;">
+                <i class="ti ti-fingerprint" style="font-size: 1.5em;"></i> Usar Biometria
+            </button>
+            
+            <button onclick="App.logout()" class="btn-outline w-full" style="border:none; color: var(--blue-dark); font-weight:700;">
+                <i class="ti ti-key"></i> Acessar com Senha
+            </button>
         </div>
     </div>
 
@@ -746,14 +752,18 @@
                     if(user && user.status === 'active') {
                         this.currentUser = user;
                         
-                        // Sistema de Bloqueio por Biometria
+                        // Fluxo do Usuário Retornando com Biometria
                         if (localStorage.getItem('bio_enabled') === 'true' && Biometrics.isSupported()) {
                             document.getElementById('view-login').classList.add('hidden');
                             document.getElementById('app').classList.add('hidden');
                             
+                            // Prepara a interface de boas-vindas
                             document.getElementById('unlock-avatar-container').innerHTML = Utils.renderAvatarHtml(user.name, user.avatar_url, 80, 4);
+                            document.getElementById('unlock-user-name').innerText = user.name.split(' ')[0]; // Pega só o primeiro nome
                             document.getElementById('view-unlock').classList.remove('hidden');
-                            this.unlockBiometric(); // Tenta abrir o modal nativo imediatamente
+                            
+                            // Gatilho automático da biometria após 500ms para suavidade visual
+                            setTimeout(() => this.unlockBiometric(), 500); 
                         } else {
                             this.verifyLoginRoutine();
                         }
@@ -769,7 +779,7 @@
                     document.getElementById('view-unlock').classList.add('hidden');
                     this.verifyLoginRoutine();
                 } else {
-                    Utils.showToast('Autenticação cancelada ou falhou. Tente novamente.', 'error');
+                    Utils.showToast('Autenticação cancelada. Tente novamente ou use a senha.', 'error');
                 }
             },
 
@@ -804,6 +814,7 @@
 
             async verifyLoginRoutine() {
                 if (this.currentUser.must_change_password) {
+                    // ... (Modal de alteração de senha permanece idêntico)
                     UI.showModal('<i class="ti ti-lock"></i> Alterar Senha Provisória', `
                         <p class="text-center text-blue-dark" style="margin-bottom: 20px;">Por favor, crie uma nova senha de no mínimo 6 dígitos para o seu acesso seguro.</p>
                         <div class="input-group"><input type="password" id="new-pwd" class="w-full" placeholder="Nova Senha"></div>
@@ -823,14 +834,50 @@
 
                                 await supabaseClient.from('users').update({ must_change_password: false }).eq('id', this.currentUser.id);
                                 this.currentUser.must_change_password = false;
-                                UI.closeModal(); this.loadApp();
+                                UI.closeModal(); this.checkBiometricsPrompt();
                             }
                         },
                         { text: 'Cancelar', class: 'btn btn-outline', onClick: () => { UI.closeModal(); this.logout(); } }
                     ]);
                 } else {
+                    this.checkBiometricsPrompt();
+                }
+            },
+
+            checkBiometricsPrompt() {
+                // Se a biometria é suportada, ainda não está ativada, e nunca perguntamos ao usuário
+                if (Biometrics.isSupported() && localStorage.getItem('bio_enabled') !== 'true' && localStorage.getItem('bio_prompted') !== 'true') {
+                    this.promptBiometricsSetup();
+                } else {
                     this.loadApp();
                 }
+            },
+
+            promptBiometricsSetup() {
+                UI.showModal('<i class="ti ti-fingerprint"></i> Login mais rápido?', `
+                    <p class="text-center text-blue-dark" style="margin-bottom: 20px;">Deseja usar sua <b>Digital ou FaceID</b> para entrar da próxima vez sem precisar digitar a senha?</p>
+                `, [
+                    {
+                        text: '<i class="ti ti-check"></i> Sim, habilitar',
+                        class: 'btn',
+                        onClick: async () => {
+                            UI.closeModal();
+                            const success = await Biometrics.enable(this.currentUser.name);
+                            if (success) Utils.showToast('Biometria habilitada com sucesso!');
+                            localStorage.setItem('bio_prompted', 'true');
+                            this.loadApp();
+                        }
+                    },
+                    {
+                        text: 'Agora não',
+                        class: 'btn btn-outline',
+                        onClick: () => {
+                            localStorage.setItem('bio_prompted', 'true');
+                            UI.closeModal();
+                            this.loadApp();
+                        }
+                    }
+                ]);
             },
 
             async logout() {
@@ -864,6 +911,7 @@
             },
 
             async checkWinnerStatus() {
+                // ... (Permanece idêntico)
                 const numbers = await DB.getByIndex('lucky_numbers', 'user_id', this.currentUser.id);
                 const wonNumbers = numbers.filter(n => n.status === 'drawn' && !n.winner_notified);
                 
@@ -873,7 +921,7 @@
                     UI.showModal('🎉 VOCÊ FOI SORTEADO! 🎉', `
                         <div class="text-center">
                             <div style="font-size: 4em; margin-bottom: 20px;">🏆</div>
-                            <h3 class="text-gold" style="font-size: 1.5em; margin-bottom: 10px;">Parabéns, ${this.currentUser.name}!</h3>
+                            <h3 class="text-gold" style="font-size: 1.5em; margin-bottom: 10px;">Parabéns, ${this.currentUser.name.split(' ')[0]}!</h3>
                             <p class="font-bold text-blue-dark">Seus seguintes números da sorte foram premiados:</p>
                             <div style="font-size: 2.5em; font-weight: bold; font-family: monospace; color: var(--gold); margin: 20px 0; background: rgba(212,175,55,0.1); border: 1px dashed var(--gold); padding: 15px; border-radius: 8px;">
                                 ${numsStr}
@@ -887,6 +935,7 @@
             },
 
             buildMenu() {
+                // ... (Permanece idêntico, menus de Admin e Vendedor)
                 const sb = document.getElementById('sidebar');
                 const copyText = `<p class="copy">&#169 2026 Conquista v1.0<br>Todos os direitos reservados<br>Maykow Roberto c097419</p>`;
                 
