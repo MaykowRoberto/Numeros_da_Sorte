@@ -119,6 +119,7 @@
             background: #f9f9fa; border: 1px solid var(--blue-light);
             color: var(--blue-dark); font-size: 1em; transition: var(--transition);
         }
+        .input-group input[type="file"] { padding: 8px; background: #fff; }
         .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
         .checkbox-group { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; cursor: pointer; color: var(--blue-dark); font-weight: 600; }
         .checkbox-group input { width: 20px; height: 20px; cursor: pointer; accent-color: var(--gold); }
@@ -176,13 +177,14 @@
         .ranking-item.top-2 { background: linear-gradient(90deg, rgba(192,192,192,0.1) 0%, #ffffff 100%); border-left: 4px solid #C0C0C0; }
         .ranking-item.top-3 { background: linear-gradient(90deg, rgba(205,127,50,0.1) 0%, #ffffff 100%); border-left: 4px solid #CD7F32; }
         
-        .pos-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; background: var(--blue-dark); color: #ffffff; margin-right: 15px; font-size: 1.2em; }
+        .pos-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; background: var(--blue-dark); color: #ffffff; margin-right: 15px; font-size: 1.2em; flex-shrink: 0;}
         .top-1 .pos-badge { background: #FFD700; color: var(--blue-dark); box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
         .top-2 .pos-badge { background: #C0C0C0; color: var(--blue-dark); }
         .top-3 .pos-badge { background: #CD7F32; color: #fff; }
 
-        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #f2f2f4; display: flex; justify-content: center; align-items: center; margin-right: 15px; border: 2px solid var(--blue-light); overflow: hidden; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #f2f2f4; display: flex; justify-content: center; align-items: center; margin-right: 15px; border: 2px solid var(--blue-light); overflow: hidden; flex-shrink: 0;}
         .avatar span { font-weight: bold; color: var(--blue-dark); }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .top-1 .avatar { border-color: #FFD700; }
 
         .rank-info { flex: 1; }
@@ -233,26 +235,29 @@
         .winner-card { transform: scale(0); opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .winner-card.show { transform: scale(1); opacity: 1; }
 
+        /* Estilo da Contagem Regressiva Gamificada */
         .gamification-banner {
-            background: linear-gradient(90deg, var(--blue-dark) 0%, var(--blue-light) 100%);
-            padding: 15px 20px; border-radius: 8px; border-left: 4px solid var(--gold); margin-bottom: 20px;
-            display: flex; align-items: center; gap: 15px; font-weight: bold; color: #ffffff; animation: pulseBanner 2s infinite;
-            box-shadow: 0 4px 15px rgba(13, 31, 116, 0.2);
+            padding: 20px; border-radius: 12px; margin-bottom: 25px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px; font-weight: bold; color: #ffffff;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); transition: background-color 0.5s ease;
         }
-
+        .countdown-title { font-size: 1.2em; text-transform: uppercase; letter-spacing: 2px; }
+        .countdown-time { font-size: 2.8em; font-weight: 800; font-family: monospace; letter-spacing: 4px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .countdown-msg { font-size: 1.1em; background: rgba(0,0,0,0.15); padding: 8px 20px; border-radius: 20px; animation: msgFade 5s infinite; text-align: center;}
+        
         #toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 99999 !important; display: flex; flex-direction: column; gap: 10px; }
         .toast { background: var(--blue-dark); border-left: 4px solid var(--gold); padding: 15px 20px; border-radius: 4px; box-shadow: 0 5px 15px rgba(13,31,116,0.5); animation: slideUp 0.3s ease; color: white; font-weight: 600; display:flex; align-items:center; gap: 10px; }
         
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(13,31,116,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .modal { background: #ffffff; border: 2px solid var(--gold); border-radius: 12px; width: 90%; max-width: 500px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(13,31,116,0.8); backdrop-filter: blur(5px); z-index: 9999; display: flex; justify-content: center; align-items: center; padding: 15px; }
+        .modal { background: #ffffff; border: 2px solid var(--gold); border-radius: 12px; width: 100%; max-width: 500px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;}
         .modal-header { font-size: 1.5em; color: var(--blue-dark); text-align: center; margin-bottom: 20px; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #f2f2f4; padding-bottom: 10px; display:flex; justify-content:center; align-items:center; gap: 10px;}
         .modal-body { margin-bottom: 25px; line-height: 1.5; color: var(--blue-dark); }
         .modal-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
 
-        @keyframes pulseBanner { 0% { box-shadow: 0 0 0 0 rgba(66, 130, 169, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(66, 130, 169, 0); } 100% { box-shadow: 0 0 0 0 rgba(66, 130, 169, 0.4); } }
         @keyframes pulseWinner { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(212,175,55,0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(212,175,55,0.8); } 100% { transform: scale(1); box-shadow: 0 0 10px rgba(212,175,55,0.4); } }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes msgFade { 0%, 100% { opacity: 0; transform: translateY(5px); } 10%, 90% { opacity: 1; transform: translateY(0); } }
         .animate-fade { animation: fadeIn 0.4s ease; }
 
         @media (max-width: 768px) {
@@ -268,6 +273,7 @@
             .responsive-table tbody td::before { content: attr(data-label); font-weight: bold; color: var(--blue-dark); font-size: 0.85em; text-transform: uppercase; }
             .responsive-table tbody td:last-child { border-bottom: none; }
             .config-grid { grid-template-columns: 1fr !important; }
+            .countdown-time { font-size: 2.2em; }
         }
         @media (min-width: 769px) {
             .mobile-menu-btn { display: none; }
@@ -313,12 +319,9 @@
         <header class="topbar">
             <div class="flex items-center gap-2">
                 <button class="mobile-menu-btn" onclick="UI.toggleSidebar()"><i class="ti ti-menu-2"></i></button>
-                <div class="topbar-brand"><i class="ti ti-shield-check"></i> CONQUISTA SEGURIDADE</div>
+                <div class="topbar-brand"><i class="ti ti-shield-check"></i> CONQUISTA</div>
             </div>
-            <div class="flex items-center gap-2">
-                <div class="avatar" style="width: 40px; height: 40px; margin: 0; background: var(--blue-dark); color: #fff;" id="topbar-avatar"><span></span></div>
-                <span id="topbar-name" style="font-weight: 700; color: var(--blue-dark); display: none;"></span>
-            </div>
+            <div class="flex items-center gap-2" id="topbar-profile"></div>
         </header>
 
         <div class="main-container">
@@ -348,9 +351,11 @@
                 return data || [];
             },
             getById: async (table, id) => {
-                 const { data } = await supabaseClient.from(table).select('*').eq('id', id).single();
+                 // Usar maybeSingle() impede o erro 406 caso retorne 0 linhas
+                 const { data } = await supabaseClient.from(table).select('*').eq('id', id).maybeSingle();
                  return data;
             },
+            
             getByIndex: async (table, col, val) => {
                  const { data } = await supabaseClient.from(table).select('*').eq(col, val);
                  return data || [];
@@ -389,6 +394,7 @@
 
                 const agencyMap = Object.fromEntries(agencies.map(a => [a.id, a.name]));
 
+                // Filtra apenas vendedores (exclui admins e observers do ranking)
                 let rank = users.filter(u => u.role === 'seller' && u.status === 'active').map(u => ({
                     ...u,
                     agencyName: agencyMap[u.agency_id] || 'Desconhecida',
@@ -427,10 +433,11 @@
         };
 
         // =====================================================
-        // UTILS & EFEITOS
+        // UTILS, EFEITOS E TEMPORIZADORES
         // =====================================================
         const Utils = {
             formatDate: (dateStr) => {
+                if(!dateStr) return '';
                 const d = new Date(dateStr);
                 return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
             },
@@ -452,6 +459,7 @@
                 setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3000);
             },
             getInitials: (name) => {
+                if(!name) return '';
                 const parts = name.split(' ');
                 return parts.length > 1 ? (parts[0][0] + parts[parts.length-1][0]).toUpperCase() : parts[0].substring(0,2).toUpperCase();
             },
@@ -461,6 +469,19 @@
                     const audio = new Audio(filename);
                     audio.play().catch(() => {});
                 } catch(e) {}
+            },
+            // Função universal para renderizar avatar com ou sem foto
+            renderAvatarHtml: (name, url, size = 45, border = 2) => {
+                if(url) return `<div class="avatar" style="width:${size}px; height:${size}px; border-width:${border}px;"><img src="${url}" alt="Foto"></div>`;
+                return `<div class="avatar" style="width:${size}px; height:${size}px; border-width:${border}px;"><span>${Utils.getInitials(name)}</span></div>`;
+            },
+            // Verifica permissão (Observadores não podem alterar)
+            checkPermission: () => {
+                if(App.currentUser.role === 'observer') {
+                    Utils.showToast('Acesso Negado: Como Observador, você pode visualizar mas não pode fazer alterações ou sorteios no sistema.', 'error');
+                    return false;
+                }
+                return true;
             }
         };
 
@@ -489,6 +510,106 @@
                     ], { duration: fallDuration * 1000, easing: 'cubic-bezier(.37,0,.63,1)', fill: 'forwards' });
                     setTimeout(() => conf.remove(), fallDuration * 1000);
                 }
+            }
+        };
+
+        // Gerenciador da Contagem Regressiva
+        const CampaignTimer = {
+            endDate: null,
+            timerInterval: null,
+            msgInterval: null,
+            
+            init: async () => {
+                const config = await DB.getById('campaign_settings', 1);
+                if(config && config.end_date) {
+                    CampaignTimer.endDate = new Date(config.end_date).getTime();
+                } else {
+                    CampaignTimer.endDate = null;
+                }
+            },
+
+            getPhaseInfo: (diff) => {
+                if (diff <= 0) return { title: "🏁 CAMPANHA ENCERRADA", color: "#8b0000", bg: "#8b0000", msgs: ["Obrigado pela participação e empenho!", "Os resultados estão definidos."] };
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+
+                if (days >= 15) return { title: "🟢 Campanha em Andamento", color: "#2e7d32", bg: "linear-gradient(90deg, #1b5e20 0%, #2e7d32 100%)", msgs: ["🚀 A campanha está só começando. Cada venda faz diferença!", "🎟️ Cada número conquistado aumenta suas chances. Continue avançando!", "🔥 O jogo começou! Quanto mais vende, mais acumula.", "🏆 O pódio ainda está aberto. Comece a construir sua vantagem!"]};
+                if (days >= 8) return { title: `🟡 FALTAM ${days} DIAS`, color: "#f57f17", bg: "linear-gradient(90deg, #f57f17 0%, #f9a825 100%)", msgs: ["🔥 A reta final está se aproximando. Hora de acelerar!", "🏆 O ranking pode mudar muito nos próximos dias.", "🎟️ Cada nova venda pode aproximar você do prêmio!", "⚡ Ainda dá tempo de subir muitas posições.", "👀 Quem está no topo já está olhando para trás... e você pode estar chegando!"]};
+                if (days >= 3) return { title: `🟠 FALTAM ${days} DIAS`, color: "#e65100", bg: "linear-gradient(90deg, #e65100 0%, #ef6c00 100%)", msgs: ["🚨 ÚLTIMA SEMANA!", "🔥 Agora é hora de acelerar.", "🏆 A semana decisiva começou!", "⚡ Dias para mudar sua posição no ranking!", "🚀 A reta final começou. Quem vai terminar no topo?"]};
+                if (days >= 1) return { title: `🔴 FALTAM ${days} DIAS`, color: "#c62828", bg: "linear-gradient(90deg, #b71c1c 0%, #c62828 100%)", msgs: ["🔥 A disputa está pegando fogo!", "🎯 É agora! Cada venda conta.", "🏆 O pódio está ao alcance. Não pare agora!", "🎟️ Mais uma venda. Mais números. Mais chances.", "🚨 A contagem regressiva começou de verdade!"]};
+                if (hours >= 6) return { title: "🚨 ÚLTIMAS 24 HORAS!", color: "#b71c1c", bg: "linear-gradient(90deg, #8b0000 0%, #b71c1c 100%)", msgs: ["🔥 É AGORA! Restam apenas horas!", "🎟️ Cada número conquistado pode ser decisivo.", "🏆 Última chance de subir no ranking!", "⚡ O relógio está correndo. Aproveite cada oportunidade!", "🎯 Seu próximo número pode fazer toda a diferença."]};
+                if (hours >= 1) return { title: "🔥 ÚLTIMAS 6 HORAS!", color: "#d50000", bg: "linear-gradient(90deg, #ff0000 0%, #d50000 100%)", msgs: ["🚨 O tempo está acabando!", "🔥 Agora é tudo ou nada!", "🎟️ Ainda dá tempo de conquistar mais números!", "🏆 Quem vai terminar no topo?", "⚡ A última arrancada começou!"]};
+                if (minutes >= 10) return { title: "🚨 ÚLTIMA HORA!", color: "#ff0000", bg: "linear-gradient(90deg, #000000 0%, #ff0000 100%)", msgs: ["🔥 ÚLTIMA HORA!", "🚨 O relógio está correndo!", "🎟️ Últimos números da campanha!", "🏆 É a sua última chance de subir no ranking!", "🎯 Quem será que termina no topo?"]};
+                return { title: "⚡ ÚLTIMOS MINUTOS!", color: "#ff0000", bg: "linear-gradient(90deg, #000000 0%, #d50000 100%)", msgs: ["⚡ CORRA!", "🎯 O TEMPO ACABOU!", "🔥 É AGORA OU NUNCA!"]};
+            },
+
+            render: () => {
+                if(!CampaignTimer.endDate) return '';
+                return `
+                    <div id="campaign-banner" class="gamification-banner">
+                        <div id="cb-title" class="countdown-title">Calculando...</div>
+                        <div id="cb-time" class="countdown-time">--:--:--</div>
+                        <div id="cb-msg" class="countdown-msg">Prepare-se!</div>
+                    </div>
+                `;
+            },
+
+            start: () => {
+                if(!CampaignTimer.endDate) return;
+                if(CampaignTimer.timerInterval) clearInterval(CampaignTimer.timerInterval);
+                if(CampaignTimer.msgInterval) clearInterval(CampaignTimer.msgInterval);
+
+                const titleEl = document.getElementById('cb-title');
+                const timeEl = document.getElementById('cb-time');
+                const msgEl = document.getElementById('cb-msg');
+                const bannerEl = document.getElementById('campaign-banner');
+
+                if(!titleEl) return;
+
+                let msgIndex = 0;
+                let currentPhase = null;
+
+                // Temporizador 1: Relógio (roda a cada 1s)
+                CampaignTimer.timerInterval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const diff = CampaignTimer.endDate - now;
+                    
+                    const phase = CampaignTimer.getPhaseInfo(diff);
+                    if(!currentPhase || currentPhase.title !== phase.title) {
+                        currentPhase = phase;
+                        titleEl.innerText = phase.title;
+                        bannerEl.style.background = phase.bg;
+                        msgEl.innerText = phase.msgs[msgIndex % phase.msgs.length];
+                    }
+
+                    if(diff <= 0) {
+                        timeEl.innerText = "00:00:00";
+                        clearInterval(CampaignTimer.timerInterval);
+                        clearInterval(CampaignTimer.msgInterval);
+                        return;
+                    }
+
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    timeEl.innerText = `${days > 0 ? days + 'd ' : ''}${String(hours).padStart(2,'0')}h ${String(minutes).padStart(2,'0')}m ${String(seconds).padStart(2,'0')}s`;
+                }, 1000);
+
+                // Temporizador 2: Mensagens (roda a cada 5s)
+                CampaignTimer.msgInterval = setInterval(() => {
+                    // Recalcula o diff dentro deste escopo para evitar o ReferenceError
+                    const now = new Date().getTime();
+                    const diff = CampaignTimer.endDate - now; 
+
+                    if(currentPhase && diff > 0) {
+                        msgIndex++;
+                        msgEl.innerText = currentPhase.msgs[msgIndex % currentPhase.msgs.length];
+                    }
+                }, 5000);
             }
         };
 
@@ -558,8 +679,10 @@
                         case 'admin-draw': content.innerHTML = await Renderers.adminDraw(); break;
                         case 'admin-history': content.innerHTML = await Renderers.adminHistory(); break;
                         case 'admin-settings': content.innerHTML = await Renderers.adminSettings(); break;
+                        case 'my-profile': content.innerHTML = await Renderers.myProfile(); break;
                         default: content.innerHTML = '<h2>Página não encontrada</h2>';
                     }
+                    CampaignTimer.start(); // Reinicia os timers da view atual
                 } catch(e) {
                     console.error(e); content.innerHTML = `<h3 style="color:red"><i class="ti ti-alert-triangle"></i> Erro ao carregar tela.</h3>`;
                 }
@@ -570,9 +693,9 @@
                     <div class="card animate-fade" style="margin-bottom: 30px; background: linear-gradient(180deg, #ffffff 0%, #f9f9fa 100%);">
                         <h3 class="text-center text-gold" style="position: relative; z-index: 10; margin-bottom: 3.13rem;">👑 PÓDIO ATUAL</h3>
                         <div class="flex justify-center items-end gap-3" style="margin-top: 40px; height: 160px; padding-bottom: 10px;">
-                            ${top3[1] ? `<div class="text-center" style="transform: translateY(-20px)"><div class="pos-badge" style="margin: 0 auto 10px;">2</div><div class="avatar" style="margin: 0 auto; width:60px;height:60px;"><span>${Utils.getInitials(top3[1].name)}</span></div><div class="rank-name mt-2">${top3[1].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[1].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[1].totalValue)}</div></div>` : ''}
-                            ${top3[0] ? `<div class="text-center" style="transform: translateY(-50px)"><div class="pos-badge" style="margin: 0 auto 10px; width:60px;height:60px; font-size:1.5em;">1</div><div class="avatar" style="margin: 0 auto; width:80px;height:80px; border-width:3px;"><span>${Utils.getInitials(top3[0].name)}</span></div><div class="rank-name mt-2" style="font-size:1.2em;">${top3[0].name.split(' ')[0]}</div><div class="text-gold font-bold" style="font-size:1.3em;">${top3[0].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[0].totalValue)}</div></div>` : ''}
-                            ${top3[2] ? `<div class="text-center" style="transform: translateY(0px)"><div class="pos-badge" style="margin: 0 auto 10px;">3</div><div class="avatar" style="margin: 0 auto; width:50px;height:50px;"><span>${Utils.getInitials(top3[2].name)}</span></div><div class="rank-name mt-2">${top3[2].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[2].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[2].totalValue)}</div></div>` : ''}
+                            ${top3[1] ? `<div class="text-center" style="transform: translateY(-20px)"><div class="pos-badge" style="margin: 0 auto 10px;">2</div>${Utils.renderAvatarHtml(top3[1].name, top3[1].avatar_url, 60)}<div class="rank-name mt-2">${top3[1].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[1].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[1].totalValue)}</div></div>` : ''}
+                            ${top3[0] ? `<div class="text-center" style="transform: translateY(-50px)"><div class="pos-badge" style="margin: 0 auto 10px; width:60px;height:60px; font-size:1.5em;">1</div>${Utils.renderAvatarHtml(top3[0].name, top3[0].avatar_url, 80, 3)}<div class="rank-name mt-2" style="font-size:1.2em;">${top3[0].name.split(' ')[0]}</div><div class="text-gold font-bold" style="font-size:1.3em;">${top3[0].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[0].totalValue)}</div></div>` : ''}
+                            ${top3[2] ? `<div class="text-center" style="transform: translateY(0px)"><div class="pos-badge" style="margin: 0 auto 10px;">3</div>${Utils.renderAvatarHtml(top3[2].name, top3[2].avatar_url, 50)}<div class="rank-name mt-2">${top3[2].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[2].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[2].totalValue)}</div></div>` : ''}
                         </div>
                     </div>
                 `;
@@ -659,14 +782,7 @@
                                 this.loadApp();
                             }
                         },
-                        { 
-                            text: 'Cancelar', 
-                            class: 'btn btn-outline', 
-                            onClick: () => {
-                                UI.closeModal();
-                                this.logout();
-                            }
-                        }
+                        { text: 'Cancelar', class: 'btn btn-outline', onClick: () => { UI.closeModal(); this.logout(); } }
                     ]);
                 } else {
                     this.loadApp();
@@ -685,13 +801,17 @@
                 document.getElementById('view-login').classList.add('hidden');
                 document.getElementById('app').classList.remove('hidden');
                 
-                document.getElementById('topbar-name').textContent = this.currentUser.name;
-                document.getElementById('topbar-name').style.display = 'block';
-                document.getElementById('topbar-avatar').innerHTML = `<span>${Utils.getInitials(this.currentUser.name)}</span>`;
+                // Configuração da Topbar com Avatar
+                document.getElementById('topbar-profile').innerHTML = `
+                    ${Utils.renderAvatarHtml(this.currentUser.name, this.currentUser.avatar_url, 40)}
+                    <span style="font-weight: 700; color: var(--blue-dark);">${this.currentUser.name}</span>
+                `;
 
+                // Inicializa Configurações de Data
+                await CampaignTimer.init();
                 this.buildMenu();
                 
-                if(this.currentUser.role === 'admin') {
+                if(this.currentUser.role === 'admin' || this.currentUser.role === 'observer') {
                     UI.navigate('admin-dashboard');
                 } else {
                     UI.navigate('seller-dashboard');
@@ -719,12 +839,9 @@
                         </div>
                     `, [{ text: '<i class="ti ti-confetti"></i> Comemorar Conquista!', class: 'btn', onClick: () => { UI.closeModal(); UI.navigate('seller-numbers'); } }]);
 
-                    // CORREÇÃO: Usando UPDATE direto para respeitar as regras do RLS
+                    // UPDATE direto via client para o vendedor (sem RLS Insert trigger)
                     for(let n of wonNumbers) {
-                        await supabaseClient
-                            .from('lucky_numbers')
-                            .update({ winner_notified: true })
-                            .eq('id', n.id);
+                        await supabaseClient.from('lucky_numbers').update({ winner_notified: true }).eq('id', n.id);
                     }
                 }
             },
@@ -732,7 +849,8 @@
             buildMenu() {
                 const sb = document.getElementById('sidebar');
                 const copyText = `<p class="copy">&#169 2026 Conquista v1.0<br>Todos os direitos reservados<br>Maykow Roberto c097419</p>`;
-                if(this.currentUser.role === 'admin') {
+                
+                if(this.currentUser.role === 'admin' || this.currentUser.role === 'observer') {
                     sb.innerHTML = `
                         <a class="nav-item" onclick="UI.navigate('admin-dashboard')"><i class="ti ti-home"></i> Dashboard</a>
                         <a class="nav-item" onclick="UI.navigate('admin-launch-sale')"><i class="ti ti-receipt"></i> Lançar Venda</a>
@@ -740,9 +858,10 @@
                         <a class="nav-item" onclick="UI.navigate('agency-ranking')"><i class="ti ti-building"></i> Ranking de Agências</a>
                         <a class="nav-item" onclick="UI.navigate('product-ranking')"><i class="ti ti-package"></i> Ranking por Produto</a>
                         <a class="nav-item" onclick="UI.navigate('admin-draw')"><i class="ti ti-ticket"></i> Sorteio</a>
-                        <a class="nav-item" onclick="UI.navigate('drawn-numbers')"><i class="ti ti-award  "></i> Números Sorteados</a>
+                        <a class="nav-item" onclick="UI.navigate('drawn-numbers')"><i class="ti ti-award"></i> Números Sorteados</a>
                         <a class="nav-item" onclick="UI.navigate('admin-history')"><i class="ti ti-history"></i> Histórico</a>
                         <a class="nav-item" onclick="UI.navigate('admin-settings')"><i class="ti ti-settings"></i> Configurações</a>
+                        <a class="nav-item" onclick="UI.navigate('my-profile')"><i class="ti ti-user-circle"></i> Meu Perfil</a>
                         <a class="nav-item" style="color: #ff9999" onclick="App.logout()"><i class="ti ti-logout"></i> Sair</a>
                         ${copyText}
                     `;
@@ -753,7 +872,8 @@
                         <a class="nav-item" onclick="UI.navigate('global-ranking')"><i class="ti ti-trophy"></i> Ranking Geral</a>
                         <a class="nav-item" onclick="UI.navigate('product-ranking')"><i class="ti ti-package"></i> Ranking por Produto</a>
                         <a class="nav-item" onclick="UI.navigate('my-agency')"><i class="ti ti-building"></i> Minha Agência</a>
-                        <a class="nav-item" onclick="UI.navigate('drawn-numbers')"><i class="ti ti-award  "></i> Números Sorteados</a>
+                        <a class="nav-item" onclick="UI.navigate('drawn-numbers')"><i class="ti ti-award"></i> Números Sorteados</a>
+                        <a class="nav-item" onclick="UI.navigate('my-profile')"><i class="ti ti-user-circle"></i> Meu Perfil</a>
                         <a class="nav-item" style="color: #ff9999" onclick="App.logout()"><i class="ti ti-logout"></i> Sair</a>
                         ${copyText}
                     `;
@@ -777,13 +897,8 @@
                 const myAgRank = agRank.find(a => a.id === user.agency_id);
                 const agPos = myAgRank ? myAgRank.position : '-';
 
-                let msg = "Venda produtos para conquistar números da sorte!";
-                if(pos <= 3) msg = "🏆 Sensacional! Você está no pódio global!";
-                else if (pos <= 10) msg = "🔥 Top 10! Continue acelerando!";
-                else if (numbers.length > 0) msg = "🚀 Você está no jogo! Continue vendendo!";
-
                 return `
-                    <div class="gamification-banner"><span>${msg}</span></div>
+                    ${CampaignTimer.render()}
                     <div class="grid-stats animate-fade">
                         <div class="card stat-card"><div class="stat-label">Meus Números</div><div class="stat-value">${numbers.length}</div></div>
                         <div class="card stat-card"><div class="stat-label">Total Vendido</div><div class="stat-value" style="font-size: 2em; color: var(--gold);">${Utils.formatCurrency(totalVal)}</div></div>
@@ -851,6 +966,86 @@
                 `;
             },
 
+            async myProfile() {
+                const user = App.currentUser;
+                const agencies = await DB.getAll('agencies');
+                const myAgency = agencies.find(a => a.id === user.agency_id);
+
+                window.updateMyAvatar = async (e) => {
+                    e.preventDefault();
+                    const btn = document.getElementById('btn-save-avatar');
+                    const fileInput = document.getElementById('my-new-photo');
+
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        return Utils.showToast('Selecione uma imagem primeiro.', 'error');
+                    }
+
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Enviando...';
+
+                    try {
+                        const file = fileInput.files[0];
+                        const ext = file.name.split('.').pop();
+                        const fileName = `${user.id}_${Date.now()}.${ext}`;
+
+                        // Faz o upload para o Storage do Supabase (bucket 'avatars')
+                        const { error: uploadError } = await supabaseClient.storage.from('avatars').upload(fileName, file);
+                        if (uploadError) throw uploadError;
+
+                        // Pega a URL pública gerada
+                        const publicUrlData = supabaseClient.storage.from('avatars').getPublicUrl(fileName);
+                        const newAvatarUrl = publicUrlData.data.publicUrl;
+
+                        // Atualiza a tabela users
+                        const { error: updateError } = await supabaseClient
+                            .from('users')
+                            .update({ avatar_url: newAvatarUrl })
+                            .eq('id', user.id);
+
+                        if (updateError) throw updateError;
+
+                        // Atualiza o estado global da sessão e a Topbar
+                        App.currentUser.avatar_url = newAvatarUrl;
+                        document.getElementById('topbar-profile').innerHTML = `
+                            ${Utils.renderAvatarHtml(user.name, newAvatarUrl, 40)}
+                            <span style="font-weight: 700; color: var(--blue-dark);">${user.name}</span>
+                        `;
+
+                        Utils.showToast('Foto de perfil atualizada com sucesso!');
+                        UI.navigate('my-profile');
+                    } catch (err) {
+                        console.error(err);
+                        Utils.showToast('Erro ao enviar foto.', 'error');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="ti ti-device-floppy"></i> Salvar Nova Foto';
+                    }
+                };
+
+                return `
+                    <h2 class="section-title"><i class="ti ti-user-circle"></i> Meu Perfil</h2>
+                    <div class="card animate-fade" style="max-width: 500px; margin: 0 auto; text-align: center; border-top: 4px solid var(--gold);">
+                        
+                        <div style="margin: 20px 0; display: flex; justify-content: center;">
+                            ${Utils.renderAvatarHtml(user.name, user.avatar_url, 100, 4)}
+                        </div>
+
+                        <h3 class="text-blue-dark" style="margin-bottom: 5px;">${user.name}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.9em; margin-bottom: 20px; font-weight: 600;">
+                            Matrícula: <strong>${user.login}</strong> | Perfil: <strong>${user.role === 'admin' ? 'Administrador' : user.role === 'observer' ? 'Observador' : 'Vendedor'}</strong>
+                            ${myAgency ? `<br>Agência: <strong>${myAgency.name} (${myAgency.code})</strong>` : ''}
+                        </p>
+
+                        <form onsubmit="updateMyAvatar(event)" style="text-align: left; border-top: 1px dashed var(--border-glow); padding-top: 20px;">
+                            <div class="input-group">
+                                <label>Alterar Foto de Perfil</label>
+                                <input type="file" id="my-new-photo" accept="image/*" required>
+                            </div>
+                            <button type="submit" id="btn-save-avatar" class="btn w-full"><i class="ti ti-device-floppy"></i> Salvar Nova Foto</button>
+                        </form>
+                    </div>
+                `;
+            },
+
             async globalRanking() {
                 const rank = await DB.getGlobalRanking();
                 const top3 = rank.slice(0, 3);
@@ -863,7 +1058,7 @@
                             ${rank.map((u, i) => `
                                 <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
                                     <div class="pos-badge">${u.position}</div>
-                                    <div class="avatar"><span>${Utils.getInitials(u.name)}</span></div>
+                                    ${Utils.renderAvatarHtml(u.name, u.avatar_url, 45)}
                                     <div class="rank-info">
                                         <div class="rank-name">${u.name} ${u.id === App.currentUser.id ? '<span class="text-gold">(Você)</span>' : ''}</div>
                                         <div class="rank-agency">${u.agencyName}</div>
@@ -907,7 +1102,7 @@
                 const products = await DB.getAll('products');
                 const sales = await DB.getAll('sales');
                 const users = await DB.getAll('users');
-                const userMap = Object.fromEntries(users.map(u => [u.id, u.name]));
+                const userMap = Object.fromEntries(users.map(u => [u.id, u]));
                 const activeProds = products.filter(p => p.status === 'active');
 
                 let html = `<h2 class="section-title"><i class="ti ti-package"></i> Ranking por Produto</h2>`;
@@ -922,8 +1117,8 @@
                     });
 
                     const rank = Object.keys(uStats).map(uid => ({
-                        user_id: uid, name: userMap[uid] || 'Desconhecido', value: uStats[uid].value, nums: uStats[uid].nums
-                    })).sort((a,b) => b.value - a.value).slice(0, 10); 
+                        user: userMap[uid], value: uStats[uid].value, nums: uStats[uid].nums
+                    })).filter(r => r.user && r.user.role === 'seller').sort((a,b) => b.value - a.value).slice(0, 10); 
 
                     html += `
                         <div class="card animate-fade" style="margin-bottom: 20px;">
@@ -935,8 +1130,9 @@
                                 ${rank.length === 0 ? '<p class="text-muted font-bold">Nenhuma venda registrada.</p>' : rank.map((r, i) => `
                                     <div class="ranking-item ${i === 0 ? 'top-1' : ''}" style="padding: 10px 15px;">
                                         <div class="pos-badge" style="width:30px;height:30px;font-size:1em;">${i+1}</div>
+                                        ${Utils.renderAvatarHtml(r.user.name, r.user.avatar_url, 35, 1)}
                                         <div class="rank-info" style="margin-left: 10px;">
-                                            <div class="rank-name" style="font-size:1em;">${r.name}</div>
+                                            <div class="rank-name" style="font-size:1em;">${r.user.name}</div>
                                             <div class="rank-agency">${r.nums} Números Gerados</div>
                                         </div>
                                         <div class="rank-score text-blue-dark font-bold">${Utils.formatCurrency(r.value)}</div>
@@ -965,7 +1161,7 @@
                             ${agencyUsersRank.map((u, i) => `
                                 <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
                                     <div class="pos-badge">${u.agencyPos}</div>
-                                    <div class="avatar"><span>${Utils.getInitials(u.name)}</span></div>
+                                    ${Utils.renderAvatarHtml(u.name, u.avatar_url, 45)}
                                     <div class="rank-info">
                                         <div class="rank-name">${u.name} ${u.id === user.id ? '<span class="text-gold">(Você)</span>' : ''}</div>
                                         <div class="rank-agency">Posição Global: ${u.position}º</div>
@@ -996,7 +1192,7 @@
                 draws.sort((a,b) => new Date(b.date) - new Date(a.date));
 
                 return `
-                    <h2 class="section-title"><i class="ti ti-award  "></i> Números Sorteados</h2>
+                    <h2 class="section-title"><i class="ti ti-award"></i> Números Sorteados</h2>
                     <div class="tickets-grid animate-fade">
                         ${draws.length === 0 ? '<p class="font-bold text-blue-dark">Nenhum sorteio realizado ainda.</p>' : draws.map((d, i) => {
                             const ln = lnMap[d.lucky_number] || {};
@@ -1026,6 +1222,7 @@
                 const totalSalesVal = sales.reduce((acc, s) => acc + s.value, 0);
 
                 return `
+                    ${CampaignTimer.render()}
                     <h2 class="section-title"><i class="ti ti-chart-bar"></i> Visão Geral da Campanha</h2>
                     <div class="grid-stats animate-fade">
                         <div class="card stat-card"><div class="stat-label">Valor Total Vendido</div><div class="stat-value" style="color:var(--gold); font-size:2.2em;">${Utils.formatCurrency(totalSalesVal)}</div></div>
@@ -1080,6 +1277,8 @@
 
                 window.processSale = async (e) => {
                     e.preventDefault();
+                    if (!Utils.checkPermission()) return;
+
                     const btn = document.getElementById('btn-confirm-sale');
                     btn.disabled = true; btn.innerHTML = '<i class="ti ti-loader ti-spin"></i> Processando...';
 
@@ -1182,6 +1381,7 @@
                 const actives = lns.filter(n => n.status === 'active');
 
                 window.startDraw = async () => {
+                    if (!Utils.checkPermission()) return;
                     if(actives.length === 0) return UI.alert('Aviso', 'Não há números válidos para sorteio neste momento.');
                     
                     UI.confirm('Iniciar Sorteio Oficial?', 'Esta ação não poderá ser desfeita', async () => {
@@ -1192,25 +1392,18 @@
                         const winnerCard = document.getElementById('winner-card');
                         winnerCard.classList.remove('show');
 
-                        // 1. SELECIONA O VENCEDOR IMEDIATAMENTE (Síncrono e sem travar a tela)
                         const winnerIndex = Math.floor(Math.random() * actives.length);
                         const winnerNum = actives[winnerIndex];
-                        
-                        // Remove o número da lista ativa localmente para essa sessão da tela
                         actives.splice(winnerIndex, 1);
 
-                        // 2. INICIA A ANIMAÇÃO (Rodará solta sem bloqueios de rede)
                         let interval = setInterval(() => {
                             numDisplay.textContent = Utils.formatTicketNumber(Math.floor(Math.random() * 99999));
-                        }, 80); // Ajustado para 80ms para ficar ainda mais rápido e fluido visualmente
+                        }, 80);
 
                         try {
-                            // 3. FAZ AS GRAVAÇÕES NO SUPABASE ENQUANTO A ANIMAÇÃO GIRA
                             winnerNum.status = 'drawn'; 
                             winnerNum.winner_notified = false; 
                             
-                            // Como usamos await, o script espera isso terminar em background, 
-                            // mas o setInterval (animação) continua rodando perfeitamente.
                             await DB.save('lucky_numbers', winnerNum);
                             await DB.insert('draws', { lucky_number: winnerNum.id, user_id: winnerNum.user_id, agency_id: winnerNum.agency_id, admin_id: App.currentUser.id });
                             
@@ -1219,17 +1412,15 @@
                             const p = await DB.getById('products', winnerNum.product_id);
 
                             await DB.logAction('DRAW_PERFORMED', `Sorteio do número ${winnerNum.id} de ${u.name}.`, App.currentUser.id);
+                            await new Promise(resolve => setTimeout(resolve, 3000));
 
-                            // 4. GARANTE UM TEMPO DE SUSPENSE (Mínimo de 3 segundos de animação)
-                            await new Promise(resolve => setTimeout(resolve, 2000));
-
-                            // 5. TRANSIÇÃO IMEDIATA, POIS OS DADOS JÁ ESTÃO EM MÃOS
                             clearInterval(interval);
                             
                             numDisplay.textContent = winnerNum.id; 
                             numDisplay.style.color = 'var(--gold)'; 
                             numDisplay.style.animation = 'pulseWinner 1s infinite';
                             
+                            document.getElementById('w-avatar-container').innerHTML = Utils.renderAvatarHtml(u.name, u.avatar_url, 90, 3);
                             document.getElementById('w-name').textContent = u.name;
                             document.getElementById('w-agency').textContent = a ? a.name : 'Desconhecida';
                             document.getElementById('w-prod').textContent = `Origem: ${p.name}`;
@@ -1254,11 +1445,12 @@
                     </div>
                     <div class="draw-container animate-fade">
                         <div class="draw-box" id="draw-anim-box"><div class="draw-number" id="draw-num-display">00000</div></div>
-                        <div id="winner-card" class="winner-card card" style="text-align:center; border: 3px solid var(--gold); margin-bottom: 30px;">
-                            <h3 style="color: var(--blue-dark); font-weight: 800;">🎉 NÚMERO PREMIADO! 🎉</h3>
+                        <div id="winner-card" class="winner-card card" style="text-align:center; border: 3px solid var(--gold); margin-bottom: 30px; display: flex; flex-direction: column; align-items: center;">
+                            <h3 style="color: var(--blue-dark); font-weight: 800; margin-bottom: 20px;">🎉 NÚMERO PREMIADO! 🎉</h3>
+                            <div id="w-avatar-container"></div>
                             <div id="w-name" style="font-size: 1.6em; font-weight: bold; margin: 15px 0; color: var(--gold);"></div>
                             <div id="w-agency" class="text-blue-dark font-bold"></div>
-                            <div id="w-prod" style="font-size: 0.9em; margin-top: 15px; color: var(--text-muted); background: #f2f2f4; padding: 5px;"></div>
+                            <div id="w-prod" style="font-size: 0.9em; margin-top: 15px; color: var(--text-muted); background: #f2f2f4; padding: 5px; width: 100%;"></div>
                         </div>
                         <button id="btn-draw" class="btn" style="font-size: 1.3em; padding: 15px 40px;" onclick="startDraw()"><i class="ti ti-device-gamepad-2"></i> SORTEAR NÚMERO</button>
                     </div>
@@ -1269,14 +1461,27 @@
                 const users = await DB.getAll('users');
                 const products = await DB.getAll('products');
                 const agencies = await DB.getAll('agencies');
+                const campDates = await DB.getById('campaign_settings', 1) || {};
                 
                 const activeProds = products.filter(p => p.status === 'active');
-                // Traz todos os usuários ordenados por nome, independentemente do status
                 const allUsers = users.sort((a, b) => a.name.localeCompare(b.name));
                 const activeAgencies = agencies.filter(a => a.status === 'active');
 
-                // ---------- FUNÇÕES DE MODAL COM CANCELAR ----------
+                // Helper Upload Foto
+                const handlePhotoUpload = async (userId, fileElementId) => {
+                    const el = document.getElementById(fileElementId);
+                    if(el && el.files.length > 0) {
+                        const file = el.files[0];
+                        const ext = file.name.split('.').pop();
+                        const fileName = `${userId}_${Date.now()}.${ext}`;
+                        await supabaseClient.storage.from('avatars').upload(fileName, file);
+                        const url = supabaseClient.storage.from('avatars').getPublicUrl(fileName).data.publicUrl;
+                        await supabaseClient.from('users').update({ avatar_url: url }).eq('id', userId);
+                    }
+                };
+
                 window.openAddProduct = () => {
+                    if (!Utils.checkPermission()) return;
                     UI.showModal('<i class="ti ti-package"></i> Novo Produto', `
                         <div class="input-group"><label>Nome</label><input type="text" id="prod-name"></div>
                         <div class="input-group"><label>A cada valor de (R$)</label><input type="number" id="prod-target"></div>
@@ -1295,6 +1500,7 @@
                 };
 
                 window.openEditProduct = async (id) => {
+                    if (!Utils.checkPermission()) return;
                     const p = await DB.getById('products', id);
                     if(!p) return Utils.showToast('Produto não encontrado', 'error');
                     UI.showModal('<i class="ti ti-pencil"></i> Editar Produto', `
@@ -1315,6 +1521,7 @@
                 };
 
                 window.openAddAgency = () => {
+                    if (!Utils.checkPermission()) return;
                     UI.showModal('<i class="ti ti-building"></i> Nova Agência', `
                         <div class="input-group"><label>Nome</label><input type="text" id="ag-name"></div>
                         <div class="input-group"><label>Código (4 dgt)</label><input type="text" id="ag-code" maxlength="4"></div>
@@ -1331,6 +1538,7 @@
                 };
 
                 window.openEditAgency = async (id) => {
+                    if (!Utils.checkPermission()) return;
                     const a = await DB.getById('agencies', id);
                     if(!a) return Utils.showToast('Agência não encontrada', 'error');
                     UI.showModal('<i class="ti ti-pencil"></i> Editar Agência', `
@@ -1349,30 +1557,38 @@
                 };
 
                 window.openAddUser = () => {
+                    if (!Utils.checkPermission()) return;
                     const agencyOptions = activeAgencies.map(a => `<option value="${a.id}">${a.name} (${a.code})</option>`).join('');
                     UI.showModal('<i class="ti ti-user-plus"></i> Novo Usuário', `
                         <div class="input-group"><label>Nome Completo</label><input type="text" id="u-name"></div>
                         <div class="input-group"><label>Matrícula / Login</label><input type="text" id="u-mat"></div>
                         <div class="input-group" id="u-ag-container"><label>Agência</label><select id="u-ag"><option value="">Selecione...</option>${agencyOptions}</select></div>
-                        <div class="input-group"><label>Senha Provisória (Mín 6 Dgts)</label><input type="text" id="u-pwd"></div>
-                        <label class="checkbox-group"><input type="checkbox" id="u-admin" onchange="document.getElementById('u-ag-container').style.display = this.checked ? 'none' : 'block'"> <span>Admin Master</span></label>
+                        <div class="input-group"><label>Senha Provisória (Mín 6 Dgts)</label><input type="password" id="u-pwd"></div>
+                        <div class="input-group"><label>Perfil de Acesso</label>
+                            <select id="u-role" onchange="document.getElementById('u-ag-container').style.display = this.value === 'seller' ? 'block' : 'none'">
+                                <option value="seller">Participante Vendedor</option>
+                                <option value="admin">Administrador Master</option>
+                                <option value="observer">Observador (Somente Leitura)</option>
+                            </select>
+                        </div>
+                        <div class="input-group"><label>Foto de Perfil (Opcional)</label><input type="file" id="u-photo" accept="image/*"></div>
                     `, [
                         { text: '<i class="ti ti-check"></i> Cadastrar', class: 'btn', onClick: async () => {
                             const name = document.getElementById('u-name').value.trim();
                             const login = document.getElementById('u-mat').value.trim().toLowerCase();
                             const pwd = document.getElementById('u-pwd').value.trim();
-                            const isAdmin = document.getElementById('u-admin').checked;
+                            const role = document.getElementById('u-role').value;
                             const agId = document.getElementById('u-ag').value;
 
                             if(!name || !login || pwd.length < 6) return Utils.showToast('Verifique os campos. Senha mín 6 dgts.', 'error');
                             
                             const email = login.includes('@') ? login : `${login}@conquista.app`;
-
-                            const { error } = await supabaseClient.rpc('create_app_user', { 
-                                p_email: email, p_password: pwd, p_name: name, p_login: login, p_role: isAdmin ? 'admin' : 'seller', p_agency_id: agId || null
-                            });
-
+                            const { error } = await supabaseClient.rpc('create_app_user', { p_email: email, p_password: pwd, p_name: name, p_login: login, p_role: role, p_agency_id: agId || null });
                             if(error) return Utils.showToast('Erro: ' + error.message, 'error');
+
+                            // Obter ID criado para subir foto
+                            const { data: newUser } = await supabaseClient.from('users').select('id').eq('login', login).single();
+                            if(newUser) await handlePhotoUpload(newUser.id, 'u-photo');
 
                             await DB.logAction('USER_ADDED', `Usuário ${name} (Mat: ${login}) cadastrado.`, App.currentUser.id);
                             UI.closeModal(); UI.navigate('admin-settings'); Utils.showToast('Usuário Cadastrado!');
@@ -1381,48 +1597,126 @@
                     ]);
                 };
 
-                // Nova Lógica de Inativação (Alternar Status do Usuário)
+                window.openEditUser = async (id) => {
+                    if (!Utils.checkPermission()) return;
+                    const u = await DB.getById('users', id);
+                    const agencyOptions = activeAgencies.map(a => `<option value="${a.id}" ${u.agency_id === a.id ? 'selected' : ''}>${a.name} (${a.code})</option>`).join('');
+                    UI.showModal('<i class="ti ti-pencil"></i> Editar Usuário', `
+                        <div class="input-group"><label>Nome Completo</label><input type="text" id="e-u-name" value="${u.name}"></div>
+                        <div class="input-group" id="e-u-ag-container" style="display: ${u.role === 'seller' ? 'block' : 'none'}"><label>Agência</label><select id="e-u-ag"><option value="">Selecione...</option>${agencyOptions}</select></div>
+                        <div class="input-group"><label>Perfil de Acesso</label>
+                            <select id="e-u-role" onchange="document.getElementById('e-u-ag-container').style.display = this.value === 'seller' ? 'block' : 'none'">
+                                <option value="seller" ${u.role === 'seller' ? 'selected' : ''}>Participante Vendedor</option>
+                                <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Administrador Master</option>
+                                <option value="observer" ${u.role === 'observer' ? 'selected' : ''}>Observador (Somente Leitura)</option>
+                            </select>
+                        </div>
+                        <div class="input-group"><label>Nova Foto (Deixe vazio para não alterar)</label><input type="file" id="e-u-photo" accept="image/*"></div>
+                    `, [
+                        { text: '<i class="ti ti-check"></i> Salvar', class: 'btn', onClick: async () => {
+                            const name = document.getElementById('e-u-name').value.trim();
+                            const role = document.getElementById('e-u-role').value;
+                            const agId = document.getElementById('e-u-ag').value;
+
+                            if(!name) return Utils.showToast('Nome é obrigatório', 'error');
+                            await DB.save('users', { ...u, name: name, role: role, agency_id: role === 'seller' ? agId : null });
+                            await handlePhotoUpload(u.id, 'e-u-photo');
+
+                            UI.closeModal(); UI.navigate('admin-settings'); Utils.showToast('Usuário Atualizado!');
+                        }},
+                        { text: 'Cancelar', class: 'btn btn-outline', onClick: () => UI.closeModal() }
+                    ]);
+                };
+
                 window.toggleUserStatus = (id, newStatus, name) => {
+                    if (!Utils.checkPermission()) return;
                     const acao = newStatus === 'active' ? 'Ativar' : 'Inativar';
                     UI.confirm(`${acao} Usuário`, `Deseja ${acao.toLowerCase()} o acesso de <b>${name}</b>?`, async () => {
                         await supabaseClient.from('users').update({ status: newStatus }).eq('id', id);
-                        UI.navigate('admin-settings'); 
-                        Utils.showToast(`Usuário ${newStatus === 'active' ? 'Ativado' : 'Inativado'}!`);
+                        UI.navigate('admin-settings'); Utils.showToast(`Usuário ${newStatus === 'active' ? 'Ativado' : 'Inativado'}!`);
                     });
                 };
 
-                // Nova Lógica de Redefinir Senha
                 window.openResetPassword = (id, name) => {
+                    if (!Utils.checkPermission()) return;
                     UI.showModal('<i class="ti ti-key"></i> Redefinir Senha', `
                         <p class="text-center text-blue-dark" style="margin-bottom: 20px;">Defina uma nova senha provisória para <b>${name}</b>.<br><small>O usuário precisará criar uma nova senha no próximo login.</small></p>
-                        <div class="input-group"><input type="text" id="reset-pwd-input" placeholder="Nova Senha (Mín 6 dígitos)"></div>
+                        <div class="input-group"><input type="password" id="reset-pwd-input" placeholder="Nova Senha (Mín 6 dígitos)"></div>
                     `, [
                         { text: '<i class="ti ti-check"></i> Salvar', class: 'btn', onClick: async () => {
                             const pwd = document.getElementById('reset-pwd-input').value.trim();
                             if(pwd.length < 6) return Utils.showToast('A senha deve ter no mínimo 6 dígitos', 'error');
-                            
-                            // Chama a nova função RPC que criamos no SQL
                             const { error } = await supabaseClient.rpc('reset_user_password', { p_user_id: id, p_new_password: pwd });
                             if(error) return Utils.showToast('Erro: ' + error.message, 'error');
-                            
-                            UI.closeModal();
-                            Utils.showToast('Senha redefinida com sucesso!');
+                            UI.closeModal(); Utils.showToast('Senha redefinida com sucesso!');
                         }},
                         { text: 'Cancelar', class: 'btn btn-outline', onClick: () => UI.closeModal() }
                     ]);
                 };
 
                 window.deleteGeneric = (table, id, name) => {
+                    if (!Utils.checkPermission()) return;
                     UI.confirm('Excluir Registro', `Deseja excluir permanentemente <b>${name}</b>?`, async () => {
                         await DB.delete(table, id);
                         UI.navigate('admin-settings'); Utils.showToast('Removido com Sucesso!');
                     });
                 };
 
+                window.saveCampaignDates = async () => {
+                    if (!Utils.checkPermission()) return;
+                    const btn = document.getElementById('btn-save-dates');
+                    btn.disabled = true; btn.innerHTML = '<i class="ti ti-loader ti-spin"></i>';
+                    try {
+                        const start = document.getElementById('camp-start').value;
+                        const end = document.getElementById('camp-end').value;
+                        await DB.save('campaign_settings', { id: 1, start_date: start || null, end_date: end || null });
+                        Utils.showToast('Datas salvas!');
+                        await CampaignTimer.init(); // Refresh timers globally
+                    } catch (e) {
+                        Utils.showToast('Erro ao salvar datas.', 'error');
+                    }
+                    btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy"></i> Salvar Datas';
+                };
+
+                // Formatar valores para datetime-local do HTML5
+                const formatForInput = (d) => {
+                    if(!d) return '';
+                    const date = new Date(d);
+                    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+                    return date.toISOString().slice(0,16);
+                };
+
+                // Função Auxiliar para Texto de Perfis
+                const getRoleBadge = (role) => {
+                    if(role === 'admin') return '<span class="text-gold font-bold">Admin</span>';
+                    if(role === 'observer') return '<span class="text-muted font-bold"><i class="ti ti-eye"></i> Obs.</span>';
+                    return 'Vendedor';
+                };
+
                 // ---------- RENDER DOS ACCORDIONS E TABELAS ----------
                 return `
                     <h2 class="section-title"><i class="ti ti-settings"></i> Configurações</h2>
                     <div class="config-grid animate-fade">
+
+                        <!-- ACCORDION: CAMPANHA (DATAS) -->
+                        <div class="accordion">
+                            <div class="accordion-header" onclick="UI.toggleAccordion(this)">
+                                <div class="flex items-center gap-2"><i class="ti ti-calendar"></i> Datas da Campanha</div>
+                                <i class="ti ti-chevron-down"></i>
+                            </div>
+                            <div class="accordion-content">
+                                <p class="text-blue-dark" style="margin-bottom: 15px;">Defina as datas para ativar a contagem regressiva e frases de incentivo nos Painéis Principais.</p>
+                                <div class="input-group">
+                                    <label>Data de Início</label>
+                                    <input type="datetime-local" id="camp-start" value="${formatForInput(campDates.start_date)}">
+                                </div>
+                                <div class="input-group">
+                                    <label>Data de Encerramento (Final)</label>
+                                    <input type="datetime-local" id="camp-end" value="${formatForInput(campDates.end_date)}">
+                                </div>
+                                <button id="btn-save-dates" class="btn btn-sm" onclick="saveCampaignDates()"><i class="ti ti-device-floppy"></i> Salvar Datas</button>
+                            </div>
+                        </div>
                         
                         <!-- ACCORDION: USUÁRIOS -->
                         <div class="accordion">
@@ -1434,21 +1728,22 @@
                                 <div class="flex justify-end mb-3"><button class="btn btn-outline btn-sm" onclick="openAddUser()"><i class="ti ti-user-plus"></i> Novo Usuário</button></div>
                                 <div class="table-responsive">
                                     <table class="responsive-table">
-                                        <thead><tr><th>Nome</th><th>Matrícula</th><th>Perfil</th><th>Ações</th></tr></thead>
+                                        <thead><tr><th>Membro</th><th>Matrícula</th><th>Perfil</th><th>Ações</th></tr></thead>
                                         <tbody>
                                             ${allUsers.map(u => `
                                                 <tr class="${u.status === 'inactive' ? 'inactive-row' : ''}">
-                                                    <td class="font-bold">${u.name}</td>
+                                                    <td class="font-bold flex items-center gap-2">${Utils.renderAvatarHtml(u.name, u.avatar_url, 30, 1)} ${u.name}</td>
                                                     <td>${u.login}</td>
-                                                    <td>${u.role === 'admin' ? '<span class="text-gold">Admin</span>' : 'Vendedor'}</td>
+                                                    <td>${getRoleBadge(u.role)}</td>
                                                     <td class="actions-cell">
+                                                        <button class="btn-icon edit" onclick="openEditUser('${u.id}')" title="Editar Usuário/Foto"><i class="ti ti-pencil"></i></button>
                                                         ${u.id !== App.currentUser.id ? `
                                                             <button class="btn-icon reset" onclick="openResetPassword('${u.id}', '${u.name}')" title="Redefinir Senha"><i class="ti ti-key"></i></button>
                                                             ${u.status === 'active' 
                                                                 ? `<button class="btn-icon delete" onclick="toggleUserStatus('${u.id}', 'inactive', '${u.name}')" title="Inativar Usuário"><i class="ti ti-ban"></i></button>`
                                                                 : `<button class="btn-icon activate" onclick="toggleUserStatus('${u.id}', 'active', '${u.name}')" title="Ativar Usuário"><i class="ti ti-check"></i></button>`
                                                             }
-                                                        ` : '<span class="text-muted font-bold">Você</span>'}
+                                                        ` : ''}
                                                     </td>
                                                 </tr>
                                             `).join('')}
