@@ -719,9 +719,12 @@
                         </div>
                     `, [{ text: '<i class="ti ti-confetti"></i> Comemorar Conquista!', class: 'btn', onClick: () => { UI.closeModal(); UI.navigate('seller-numbers'); } }]);
 
+                    // CORREÇÃO: Usando UPDATE direto para respeitar as regras do RLS
                     for(let n of wonNumbers) {
-                        n.winner_notified = true;
-                        await DB.save('lucky_numbers', n);
+                        await supabaseClient
+                            .from('lucky_numbers')
+                            .update({ winner_notified: true })
+                            .eq('id', n.id);
                     }
                 }
             },
