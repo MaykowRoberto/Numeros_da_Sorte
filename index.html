@@ -132,10 +132,9 @@
         .section-title { font-size: 1.8em; color: var(--blue-dark); margin-bottom: 24px; border-bottom: 2px solid var(--blue-light); padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
 
         .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .stat-card { text-align: center; display: flex; flex-direction: column; justify-content: center; background: #ffffff; border-top: 4px solid var(--gold); }
         
-        /* CORREÇÃO DE DESIGN: Texto responsivo com word-break para valores grandes não estourarem o card */
-        .stat-value { font-size: clamp(1.5em, 4vw, 2.8em); font-weight: 800; color: var(--blue-dark); margin: 10px 0; line-height: 1; word-break: break-word; overflow-wrap: break-word; }
+        .stat-card { text-align: center; display: flex; flex-direction: column; justify-content: center; background: #ffffff; border-top: 4px solid var(--gold); min-width: 0; padding: 20px 12px; }
+        .stat-value { font-size: clamp(1.1em, 2vw, 2.1em); font-weight: 800; color: var(--blue-dark); margin: 10px 0; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .stat-label { font-size: 0.9em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600;}
 
         /* CSS SORTEIO AO VIVO */
@@ -212,6 +211,12 @@
         .modal-header { font-size: 1.5em; color: var(--blue-dark); text-align: center; margin-bottom: 20px; font-weight: 800; text-transform: uppercase; border-bottom: 2px solid #f2f2f4; padding-bottom: 10px; display:flex; justify-content:center; align-items:center; gap: 10px;}
         .modal-body { margin-bottom: 25px; line-height: 1.5; color: var(--blue-dark); }
         .modal-actions { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        
+        /* Checkbox dos Termos e Políticas */
+        .checkbox-container { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 20px; background: rgba(66, 130, 169, 0.05); padding: 15px; border-radius: 8px; border: 1px solid var(--blue-light); }
+        .checkbox-container input { margin-top: 4px; transform: scale(1.2); cursor: pointer;}
+        .checkbox-container label { font-size: 0.9em; font-weight: 600; color: var(--blue-dark); line-height: 1.4; cursor: pointer;}
+        .checkbox-container a { color: var(--blue-dark); text-decoration: underline; font-weight: 800; }
 
         @keyframes pulseWinner { 0% { transform: scale(1); box-shadow: 0 0 10px rgba(212,175,55,0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 25px rgba(212,175,55,0.8); } 100% { transform: scale(1); box-shadow: 0 0 10px rgba(212,175,55,0.4); } }
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -241,11 +246,23 @@
 </head>
 <body>
 
+    <!-- MODAL PRINCIPAL PADRÃO -->
     <div id="custom-modal" class="modal-overlay hidden">
         <div class="modal animate-fade">
             <div id="modal-title" class="modal-header"></div>
             <div id="modal-content" class="modal-body"></div>
             <div id="modal-actions" class="modal-actions"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DOCUMENTOS LEGAIS (TERMOS/POLÍTICAS) - Z-INDEX ALTO -->
+    <div id="document-modal" class="modal-overlay hidden" style="z-index: 999999;">
+        <div class="modal animate-fade" style="max-width: 800px; height: 90vh; display: flex; flex-direction: column; padding: 20px;">
+            <div class="modal-header" style="justify-content: space-between; border-bottom: 2px solid var(--blue-light); margin-bottom: 15px; padding-bottom: 15px;">
+                <span id="doc-modal-title" style="flex: 1; text-align: left;"></span>
+                <button class="btn-icon" style="flex-shrink: 0;" onclick="document.getElementById('document-modal').classList.add('hidden')"><i class="ti ti-x"></i></button>
+            </div>
+            <div id="doc-modal-content" class="modal-body" style="flex: 1; overflow-y: auto; text-align: left; padding-right: 10px;"></div>
         </div>
     </div>
 
@@ -306,6 +323,109 @@
     <div id="toast-container"></div>
 
     <script>
+        // =====================================================
+        // TEXTOS LEGAIS (TERMOS E POLÍTICAS)
+        // =====================================================
+       const APP_DOCUMENTS = {
+  termos: `
+    <div class="document-content">
+      <h3 class="text-blue-dark">📜 Termos de Uso</h3>
+      <p class="text-muted small">Vigência: 20 de agosto de 2026</p>
+      <hr>
+
+      <h4>1. Objeto e Âmbito de Aplicação</h4>
+      <p>Estes Termos de Uso regem a utilização da plataforma tecnológica Conquista ("Aplicativo" ou "Sistema"), disponibilizada para o suporte operacional de campanhas de incentivo de vendas promovidas por empresas contratantes ("Empresa Patrocinadora").</p>
+      <p>Ao acessar, cadastrar-se ou utilizar o App Conquista, o usuário (Participante ou Gestor) declara ter lido, compreendido e aceito integralmente estes Termos de Uso e a Política de Privacidade.</p>
+
+      <h4>2. Natureza Jurídica da Plataforma – Isenção de Prêmios e Vínculo</h4>
+      <div class="legal-warning">
+        <p><strong>⚠️ AVISO LEGAL CRUCIAL:</strong></p>
+        <ol>
+          <li>O App Conquista e seus desenvolvedores/mantenedores atuam exclusivamente como <strong>fornecedores de infraestrutura tecnológica</strong> e suporte de software para a campanha.</li>
+          <li>A Empresa Contratante (Patrocinadora) é a única e exclusiva responsável pela idealização, instituição, financiamento, aquisição, entrega e regularidade jurídica dos prêmios sorteados, bem como por eventuais autorizações legais exigidas por órgãos competentes (ex: SECAP/ME para distribuição gratuita de prêmios).</li>
+          <li>O Aplicativo <strong>não realiza sorteios de loteria pública própria</strong> nem comercializa títulos de capitalização. Trata-se de campanha de incentivo voltada ao público interno/parceiro da empresa patrocinadora.</li>
+        </ol>
+      </div>
+
+      <h4>3. Cadastro, Dados Cadastrais e Responsabilidade do Usuário</h4>
+      <p>O acesso ao Aplicativo exige o fornecimento de dados verídicos e atualizados, a saber: Nome Completo, Número de Matrícula Funcional e Foto de Perfil.</p>
+      <ul>
+        <li>O usuário é o único responsável pela guarda e confidencialidade de suas credenciais de acesso, sendo vedado o compartilhamento da senha ou conta com terceiros.</li>
+        <li>O uso indevido da conta, inserção de dados falsos de vendas ou tentativas de fraude no sistema acarretarão a <strong>desclassificação imediata</strong> do participante da campanha, além de possíveis sanções disciplinares e legais aplicadas pela Empresa Patrocinadora.</li>
+      </ul>
+
+      <h4>4. Geração de Números da Sorte e Dinâmica de Premiação</h4>
+      <p>A atribuição de números da sorte decorre estritamente do registro de vendas de produtos válidos, conforme as regras estabelecidas no regulamento interno da Empresa Patrocinadora. A plataforma garante a aleatoriedade e integridade técnica na geração dos números e na realização do sorteio eletrônico ao vivo. Contudo, eventuais divergências sobre a apuração de vendas ou elegibilidade devem ser dirimidas diretamente com o setor de recursos humanos ou gestão comercial da Empresa Patrocinadora.</p>
+
+      <h4>5. Limitação de Responsabilidade</h4>
+      <p>Os desenvolvedores do App Conquista <strong>não se responsabilizam</strong> por:</p>
+      <ul>
+        <li>Conflitos trabalhistas, disputas salariais ou desentendimentos internos decorrentes de reprovações de vendas, ausências ou classificações em rankings;</li>
+        <li>Instabilidades na rede de internet do usuário, falhas de conectividade ou indisponibilidade temporária de servidores de nuvem;</li>
+        <li>Decisões gerenciais de aprovação, reprovação ou desclassificação tomadas pelos gestores da Empresa Patrocinadora.</li>
+      </ul>
+    </div>
+  `,
+
+  privacidade: `
+    <div class="document-content">
+      <h3 class="text-blue-dark">🔒 Política de Privacidade</h3>
+      <p class="text-muted small">Vigência: 20 de agosto de 2026</p>
+      <hr>
+      <p><em>Em conformidade com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018 – LGPD).</em></p>
+
+      <h4>1. Compromisso com a Privacidade</h4>
+      <p>O App Conquista valoriza a segurança e a privacidade dos dados de seus usuários. Esta Política de Privacidade descreve quais informações coletamos, como são utilizadas, armazenadas e protegidas, em estrita observância à Lei Geral de Proteção de Dados (LGPD).</p>
+
+      <h4>2. Dados Coletados e Finalidade do Tratamento</h4>
+      <p>Para o funcionamento da plataforma de incentivo, coletamos estritamente os dados necessários (Princípio da Minimização – art. 6º, III da LGPD):</p>
+
+      <div class="data-table">
+        <div class="data-item">
+          <strong>Nome Completo</strong>
+          <span>Identificação do participante no sistema, rankings e bilhetes de sorteio.</span>
+          <span class="badge">Execução de Contrato / Legítimo Interesse</span>
+        </div>
+        <div class="data-item">
+          <strong>Número de Matrícula</strong>
+          <span>Vínculo funcional exclusivo com a empresa patrocinadora e validação de elegibilidade.</span>
+          <span class="badge">Execução de Contrato / Cumprimento de Obrigação</span>
+        </div>
+        <div class="data-item">
+          <strong>Foto de Perfil</strong>
+          <span>Personalização da interface do usuário, avatares no chat ao vivo e rankings visuais.</span>
+          <span class="badge">Consentimento do Titular</span>
+        </div>
+        <div class="data-item">
+          <strong>Dados de Vendas</strong>
+          <span>Registro de transações comerciais, apuração de pontuação e geração de números da sorte.</span>
+          <span class="badge">Execução de Contrato</span>
+        </div>
+      </div>
+
+      <h4>3. Armazenamento, Segurança e Compartilhamento de Dados</h4>
+      <p>Os dados coletados são armazenados em ambiente de nuvem seguro e criptografado (Supabase), com protocolos rígidos de segurança da informação.</p>
+      <ul>
+        <li><strong>Não Comercialização:</strong> Os dados pessoais dos usuários jamais serão comercializados, alugados ou cedidos a terceiros para fins publicitários.</li>
+        <li><strong>Compartilhamento Necessário:</strong> Os dados são compartilhados exclusivamente com a Empresa Patrocinadora (empregadora/contratante da campanha) para fins de auditoria dos sorteios e entrega de prêmios.</li>
+        <li><strong>Retenção dos Dados:</strong> Os dados serão mantidos pelo período necessário para a vigência da campanha de incentivo e cumprimento de obrigações legais fiscais/trabalhistas, sendo anonimizados ou eliminados após o término da finalidade.</li>
+      </ul>
+
+      <h4>4. Direitos dos Titulares (Art. 18 da LGPD)</h4>
+      <p>Em conformidade com a LGPD, o usuário, na qualidade de titular dos dados, pode a qualquer momento exercer seus direitos perante o Encarregado de Proteção de Dados da Empresa:</p>
+      <ul>
+        <li>Confirmação da existência de tratamento e acesso aos dados;</li>
+        <li>Correção de dados incompletos, inexatos ou desatualizados;</li>
+        <li>Eliminação de dados pessoais tratados com base no consentimento;</li>
+        <li>Revogação do consentimento, quando aplicável.</li>
+      </ul>
+
+      <h4>5. Encarregado e Contato</h4>
+      <p>Para dúvidas, solicitações ou exercício de direitos referentes à privacidade e proteção de dados, o usuário deverá entrar em contato com o administrador da plataforma ou o DPO (Data Protection Officer) indicado pela Empresa Patrocinadora.</p>
+    </div>
+  `
+};
+
         // =====================================================
         // REGISTRO DO SERVICE WORKER (PWA)
         // =====================================================
@@ -370,21 +490,46 @@
             delete: async (table, id) => { await supabaseClient.from(table).update({ status: 'deleted' }).eq('id', id); },
             logAction: async (action, details, admin_id) => { await supabaseClient.from('audit_logs').insert({ action, details, admin_id }); },
             getNextLuckyNumberSeq: async () => { const { data } = await supabaseClient.from('lucky_numbers').select('id').order('id', {ascending: false}).limit(1); return data && data.length > 0 ? parseInt(data[0].id) + 1 : 1; },
+            
             getGlobalRanking: async () => {
+                const settings = await DB.getById('campaign_settings', 1);
+                const rankType = settings?.ranking_type || 'value'; // 'value' ou 'numbers'
+
                 const users = await DB.getAll('users'); const numbers = await DB.getAll('lucky_numbers'); const sales = await DB.getAll('sales'); const agencies = await DB.getAll('agencies');
                 const userCounts = {}; numbers.forEach(n => { userCounts[n.user_id] = (userCounts[n.user_id] || 0) + 1; });
                 const userValues = {}; sales.forEach(s => { userValues[s.user_id] = (userValues[s.user_id] || 0) + s.value; });
                 const agencyMap = Object.fromEntries(agencies.map(a => [a.id, a.name]));
+                
                 let rank = users.filter(u => u.role === 'seller' && u.status === 'active').map(u => ({ ...u, agencyName: agencyMap[u.agency_id] || 'Desconhecida', totalNumbers: userCounts[u.id] || 0, totalValue: userValues[u.id] || 0 }));
-                rank.sort((a, b) => b.totalNumbers - a.totalNumbers || b.totalValue - a.totalValue); return rank.map((u, i) => ({...u, position: i + 1}));
+                
+                // ORDENAÇÃO DINÂMICA
+                if(rankType === 'numbers') {
+                    rank.sort((a, b) => b.totalNumbers - a.totalNumbers || b.totalValue - a.totalValue);
+                } else {
+                    rank.sort((a, b) => b.totalValue - a.totalValue || b.totalNumbers - a.totalNumbers);
+                }
+                
+                return rank.map((u, i) => ({...u, position: i + 1, _rankType: rankType}));
             },
+            
             getAgencyRanking: async () => {
+                const settings = await DB.getById('campaign_settings', 1);
+                const rankType = settings?.ranking_type || 'value';
+
                 const agencies = await DB.getAll('agencies'); const numbers = await DB.getAll('lucky_numbers'); const users = await DB.getAll('users'); const sales = await DB.getAll('sales');
                 const agencyCounts = {}; numbers.forEach(n => { agencyCounts[n.agency_id] = (agencyCounts[n.agency_id] || 0) + 1; });
                 const agencyValues = {}; sales.forEach(s => { agencyValues[s.agency_id] = (agencyValues[s.agency_id] || 0) + s.value; });
                 const userCounts = {}; users.filter(u => u.role === 'seller').forEach(u => { userCounts[u.agency_id] = (userCounts[u.agency_id] || 0) + 1; });
+                
                 let rank = agencies.filter(a => a.status === 'active').map(a => ({ ...a, totalNumbers: agencyCounts[a.id] || 0, totalValue: agencyValues[a.id] || 0, participants: userCounts[a.id] || 0 }));
-                rank.sort((a, b) => b.totalNumbers - a.totalNumbers || b.totalValue - a.totalValue); return rank.map((a, i) => ({...a, position: i + 1}));
+                
+                if(rankType === 'numbers') {
+                    rank.sort((a, b) => b.totalNumbers - a.totalNumbers || b.totalValue - a.totalValue);
+                } else {
+                    rank.sort((a, b) => b.totalValue - a.totalValue || b.totalNumbers - a.totalNumbers);
+                }
+                
+                return rank.map((a, i) => ({...a, position: i + 1, _rankType: rankType}));
             }
         };
 
@@ -576,6 +721,7 @@
             toggleSidebar: () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('active'); },
             closeSidebar: () => { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); },
             toggleAccordion: (h) => { h.classList.toggle('active'); h.nextElementSibling.classList.toggle('active'); },
+            
             showModal: (title, contentHTML, buttons = []) => {
                 const overlay = document.getElementById('custom-modal'); document.getElementById('modal-title').innerHTML = title; document.getElementById('modal-content').innerHTML = contentHTML;
                 const actions = document.getElementById('modal-actions'); actions.innerHTML = '';
@@ -584,12 +730,21 @@
                 overlay.classList.remove('hidden');
             },
             closeModal: () => document.getElementById('custom-modal').classList.add('hidden'),
+            
+            showDocumentModal: (title, docKey) => {
+                const docModal = document.getElementById('document-modal');
+                document.getElementById('doc-modal-title').innerHTML = `<i class="ti ti-file-description"></i> ${title}`;
+                document.getElementById('doc-modal-content').innerHTML = APP_DOCUMENTS[docKey];
+                docModal.classList.remove('hidden');
+            },
+
             confirm: (title, text, onConfirm) => {
                 UI.showModal(title, `<p class="text-center font-bold text-blue-dark" style="margin-top: 10px;">${text}</p>`, [
                     { text: 'Cancelar', class: 'btn btn-outline', onClick: () => UI.closeModal() }, { text: '<i class="ti ti-check"></i> Confirmar', class: 'btn', onClick: () => { UI.closeModal(); onConfirm(); } }
                 ]);
             },
             alert: (title, text) => UI.showModal(title, `<p class="text-center">${text}</p>`, [{ text: 'OK', class: 'btn', onClick: () => UI.closeModal() }]),
+            
             navigate: async (viewName) => {
                 UI.closeSidebar(); 
                 
@@ -622,15 +777,25 @@
                     CampaignTimer.start();
                 } catch(e) { console.error(e); content.innerHTML = `<h3 style="color:red"><i class="ti ti-alert-triangle"></i> Erro ao carregar tela.</h3>`; }
             },
-            renderPodium: (top3) => {
+            
+            renderPodium: (top3, rankType) => {
                 if(!top3 || top3.length === 0) return '';
+                
+                const renderMetric = (user) => {
+                    if(rankType === 'numbers') {
+                        return `<div class="text-gold font-bold" style="font-size:1.3em;">${user.totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(user.totalValue)}</div>`;
+                    } else {
+                        return `<div class="text-gold font-bold" style="font-size:1.1em;">${Utils.formatCurrency(user.totalValue)}</div><div style="font-size: 0.8em; color: var(--text-muted); font-weight: bold;">${user.totalNumbers} Nrs</div>`;
+                    }
+                };
+
                 return `
                     <div class="card animate-fade" style="margin-bottom: 30px; background: linear-gradient(180deg, #ffffff 0%, #f9f9fa 100%);">
                         <h3 class="text-center text-gold" style="position: relative; z-index: 10; margin-bottom: 3.13rem;">👑 PÓDIO ATUAL</h3>
                         <div class="flex justify-center items-end gap-3" style="margin-top: 40px; height: 160px; padding-bottom: 10px;">
-                            ${top3[1] ? `<div class="text-center" style="transform: translateY(-20px)"><div class="pos-badge" style="margin: 0 auto 10px;">2</div>${Utils.renderAvatarHtml(top3[1].name, top3[1].avatar_url, 60)}<div class="rank-name mt-2">${top3[1].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[1].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[1].totalValue)}</div></div>` : ''}
-                            ${top3[0] ? `<div class="text-center" style="transform: translateY(-50px)"><div class="pos-badge" style="margin: 0 auto 10px; width:60px;height:60px; font-size:1.5em;">1</div>${Utils.renderAvatarHtml(top3[0].name, top3[0].avatar_url, 80, 3)}<div class="rank-name mt-2" style="font-size:1.2em;">${top3[0].name.split(' ')[0]}</div><div class="text-gold font-bold" style="font-size:1.3em;">${top3[0].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[0].totalValue)}</div></div>` : ''}
-                            ${top3[2] ? `<div class="text-center" style="transform: translateY(0px)"><div class="pos-badge" style="margin: 0 auto 10px;">3</div>${Utils.renderAvatarHtml(top3[2].name, top3[2].avatar_url, 50)}<div class="rank-name mt-2">${top3[2].name.split(' ')[0]}</div><div class="text-gold font-bold">${top3[2].totalNumbers} Nrs</div><div style="font-size: 0.7em; color: var(--text-muted); font-weight: bold;">${Utils.formatCurrency(top3[2].totalValue)}</div></div>` : ''}
+                            ${top3[1] ? `<div class="text-center" style="transform: translateY(-20px)"><div class="pos-badge" style="margin: 0 auto 10px;">2</div>${Utils.renderAvatarHtml(top3[1].name, top3[1].avatar_url, 60)}<div class="rank-name mt-2">${top3[1].name.split(' ')[0]}</div>${renderMetric(top3[1])}</div>` : ''}
+                            ${top3[0] ? `<div class="text-center" style="transform: translateY(-50px)"><div class="pos-badge" style="margin: 0 auto 10px; width:60px;height:60px; font-size:1.5em;">1</div>${Utils.renderAvatarHtml(top3[0].name, top3[0].avatar_url, 80, 3)}<div class="rank-name mt-2" style="font-size:1.2em;">${top3[0].name.split(' ')[0]}</div>${renderMetric(top3[0])}</div>` : ''}
+                            ${top3[2] ? `<div class="text-center" style="transform: translateY(0px)"><div class="pos-badge" style="margin: 0 auto 10px;">3</div>${Utils.renderAvatarHtml(top3[2].name, top3[2].avatar_url, 50)}<div class="rank-name mt-2">${top3[2].name.split(' ')[0]}</div>${renderMetric(top3[2])}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -646,7 +811,11 @@
                     const user = await DB.getById('users', session.user.id);
                     if(user && user.status === 'active') {
                         this.currentUser = user;
-                        if (localStorage.getItem('bio_enabled') === 'true' && Biometrics.isSupported()) {
+                        // Fluxo: Se precisar mudar senha OU não tiver aceito os termos, pula biometria e força o fluxo
+                        if (user.must_change_password || !user.accepted_terms) {
+                            this.verifyLoginRoutine();
+                        }
+                        else if (localStorage.getItem('bio_enabled') === 'true' && Biometrics.isSupported()) {
                             document.getElementById('view-login').classList.add('hidden'); document.getElementById('app').classList.add('hidden');
                             document.getElementById('unlock-avatar-container').innerHTML = Utils.renderAvatarHtml(user.name, user.avatar_url, 80, 4);
                             document.getElementById('unlock-user-name').innerText = user.name.split(' ')[0];
@@ -678,6 +847,7 @@
             },
 
             async verifyLoginRoutine() {
+                // Etapa 1: Redefinir Senha
                 if (this.currentUser.must_change_password) {
                     UI.showModal('<i class="ti ti-lock"></i> Alterar Senha Provisória', `
                         <p class="text-center text-blue-dark" style="margin-bottom: 20px;">Por favor, crie uma nova senha de no mínimo 6 dígitos para o seu acesso seguro.</p>
@@ -690,14 +860,49 @@
                                 if(np.length < 6) return Utils.showToast('A senha precisa ter no mínimo 6 dígitos!', 'error');
                                 const { error } = await supabaseClient.auth.updateUser({ password: np }); if (error) return Utils.showToast('Erro ao atualizar senha.', 'error');
                                 await supabaseClient.from('users').update({ must_change_password: false }).eq('id', this.currentUser.id);
-                                this.currentUser.must_change_password = false; UI.closeModal(); this.checkBiometricsPrompt();
+                                this.currentUser.must_change_password = false; 
+                                UI.closeModal(); 
+                                this.checkTermsAcceptance(); // Pula para etapa 2
                             }
                         }, { text: 'Cancelar', class: 'btn btn-outline', onClick: () => { UI.closeModal(); this.logout(); } }
                     ]);
-                } else { this.checkBiometricsPrompt(); }
+                } else { 
+                    this.checkTermsAcceptance(); 
+                }
+            },
+
+            checkTermsAcceptance() {
+                // Etapa 2: Documentos Legais
+                if (!this.currentUser.accepted_terms) {
+                    UI.showModal('<i class="ti ti-file-certificate"></i> Termos de Uso', `
+                        <p class="text-blue-dark font-bold mb-3" style="margin-bottom: 15px; font-size:0.95em;">Atualização de Privacidade</p>
+                        <p class="text-muted" style="font-size:0.85em; margin-bottom: 20px;">Para continuar participando da campanha Conquista, você precisa ler e aceitar nossos documentos legais.</p>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="terms-checkbox">
+                            <label for="terms-checkbox">Eu declaro que li e concordo com os <a href="javascript:void(0)" onclick="UI.showDocumentModal('Termos de Uso', 'termos')">Termos de Uso</a> e as <a href="javascript:void(0)" onclick="UI.showDocumentModal('Políticas de Privacidade', 'privacidade')">Políticas de Privacidade</a> da campanha.</label>
+                        </div>
+                    `, [
+                        { text: '<i class="ti ti-check"></i> Confirmar e Continuar', class: 'btn w-full', onClick: async () => {
+                            const isChecked = document.getElementById('terms-checkbox').checked;
+                            if(!isChecked) return Utils.showToast('Você precisa marcar a caixa de aceite para continuar.', 'error');
+                            
+                            const { error } = await supabaseClient.from('users').update({ accepted_terms: true }).eq('id', this.currentUser.id);
+                            if(error) return Utils.showToast('Erro ao registrar aceite. Tente novamente.', 'error');
+
+                            this.currentUser.accepted_terms = true;
+                            UI.closeModal();
+                            Utils.showToast('Obrigado! Documentos aceitos.');
+                            this.checkBiometricsPrompt(); // Pula para etapa 3
+                        }},
+                        { text: 'Sair e Cancelar', class: 'btn btn-outline w-full mt-2', onClick: () => { UI.closeModal(); this.logout(); } }
+                    ]);
+                } else {
+                    this.checkBiometricsPrompt();
+                }
             },
 
             checkBiometricsPrompt() {
+                // Etapa 3: Biometria
                 if (Biometrics.isSupported() && localStorage.getItem('bio_enabled') !== 'true' && localStorage.getItem('bio_prompted') !== 'true') { this.promptBiometricsSetup(); }
                 else { this.loadApp(); }
             },
@@ -891,6 +1096,13 @@
                             <div class="input-group"><label>Alterar Foto de Perfil</label><input type="file" id="my-new-photo" accept="image/*" required></div>
                             <button type="submit" id="btn-save-avatar" class="btn w-full"><i class="ti ti-device-floppy"></i> Salvar Nova Foto</button>
                         </form>
+                        
+                        <div style="margin-top: 25px; border-top: 1px dashed var(--border-glow); padding-top: 20px; text-align:left;">
+                            <h4 class="text-blue-dark" style="margin-bottom: 15px;"><i class="ti ti-file-certificate"></i> Informações Legais</h4>
+                            <button class="btn btn-outline w-full mb-2" onclick="UI.showDocumentModal('Termos de Uso', 'termos')"><i class="ti ti-file-description"></i> Consultar Termos de Uso</button>
+                            <button class="btn btn-outline w-full" onclick="UI.showDocumentModal('Políticas de Privacidade', 'privacidade')"><i class="ti ti-shield-lock"></i> Consultar Políticas de Privacidade</button>
+                        </div>
+
                         ${bioHtml}
                     </div>
                 `;
@@ -898,16 +1110,25 @@
 
             async globalRanking() {
                 const rank = await DB.getGlobalRanking(); const top3 = rank.slice(0, 3);
+                const rankType = rank.length > 0 ? rank[0]._rankType : 'value';
+
+                const renderScore = (u) => {
+                    if (rankType === 'numbers') {
+                        return `<div class="rank-score-num">${u.totalNumbers} Nrs</div><div class="rank-score-val" style="color:var(--text-muted);">${Utils.formatCurrency(u.totalValue)}</div>`;
+                    }
+                    return `<div class="rank-score-val" style="font-size:1.1em; color:var(--blue-dark); font-weight:bold;">${Utils.formatCurrency(u.totalValue)}</div><div class="rank-score-num" style="font-size:0.9em; color:var(--gold);">${u.totalNumbers} Nrs</div>`;
+                };
+
                 return `
                     <h2 class="section-title">🏆 Ranking Geral</h2>
-                    ${UI.renderPodium(top3)}
+                    ${UI.renderPodium(top3, rankType)}
                     <div class="card animate-fade">
                         <div class="ranking-list">
                             ${rank.map((u, i) => `
                                 <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
                                     <div class="pos-badge">${u.position}</div>${Utils.renderAvatarHtml(u.name, u.avatar_url, 45)}
                                     <div class="rank-info"><div class="rank-name">${u.name} ${u.id === App.currentUser.id ? '<span class="text-gold">(Você)</span>' : ''}</div><div class="rank-agency">${u.agencyName}</div></div>
-                                    <div class="rank-score"><div class="rank-score-val">${Utils.formatCurrency(u.totalValue)}</div><div class="rank-score-num">${u.totalNumbers} Nrs</div></div>
+                                    <div class="rank-score text-right">${renderScore(u)}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -917,6 +1138,15 @@
 
             async agencyRanking() {
                 const rank = await DB.getAgencyRanking();
+                const rankType = rank.length > 0 ? rank[0]._rankType : 'value';
+
+                const renderScore = (a) => {
+                    if (rankType === 'numbers') {
+                        return `<div class="rank-score-num">${a.totalNumbers} Nrs</div><div class="rank-score-val" style="color:var(--text-muted);">${Utils.formatCurrency(a.totalValue)}</div>`;
+                    }
+                    return `<div class="rank-score-val" style="font-size:1.1em; color:var(--blue-dark); font-weight:bold;">${Utils.formatCurrency(a.totalValue)}</div><div class="rank-score-num" style="font-size:0.9em; color:var(--gold);">${a.totalNumbers} Nrs</div>`;
+                };
+
                 return `
                     <h2 class="section-title"><i class="ti ti-building"></i> Ranking de Agências</h2>
                     <div class="card animate-fade">
@@ -925,7 +1155,7 @@
                                 <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
                                     <div class="pos-badge">${a.position}</div>
                                     <div class="rank-info" style="margin-left: 15px;"><div class="rank-name">${a.name} (${a.code})</div><div class="rank-agency">${a.participants} participantes vinculados</div></div>
-                                    <div class="rank-score"><div class="rank-score-val">${Utils.formatCurrency(a.totalValue)}</div><div class="rank-score-num">${a.totalNumbers} Nrs</div></div>
+                                    <div class="rank-score text-right">${renderScore(a)}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -965,7 +1195,16 @@
 
             async myAgency() {
                 const user = App.currentUser; const agencies = await DB.getAll('agencies'); const myAgency = agencies.find(a => a.id === user.agency_id);
-                const globalRank = await DB.getGlobalRanking(); const agencyUsersRank = globalRank.filter(u => u.agency_id === user.agency_id); agencyUsersRank.forEach((u, i) => u.agencyPos = i + 1);
+                const globalRank = await DB.getGlobalRanking(); 
+                const rankType = globalRank.length > 0 ? globalRank[0]._rankType : 'value';
+                const agencyUsersRank = globalRank.filter(u => u.agency_id === user.agency_id); agencyUsersRank.forEach((u, i) => u.agencyPos = i + 1);
+
+                const renderScore = (u) => {
+                    if (rankType === 'numbers') {
+                        return `<div class="rank-score-num">${u.totalNumbers} Nrs</div><div class="rank-score-val" style="color:var(--text-muted);">${Utils.formatCurrency(u.totalValue)}</div>`;
+                    }
+                    return `<div class="rank-score-val" style="font-size:1.1em; color:var(--blue-dark); font-weight:bold;">${Utils.formatCurrency(u.totalValue)}</div><div class="rank-score-num" style="font-size:0.9em; color:var(--gold);">${u.totalNumbers} Nrs</div>`;
+                };
 
                 return `
                     <h2 class="section-title"><i class="ti ti-building"></i> ${myAgency ? myAgency.name : 'Minha Agência'}</h2>
@@ -976,7 +1215,7 @@
                                 <div class="ranking-item ${i < 3 ? 'top-'+(i+1) : ''}">
                                     <div class="pos-badge">${u.agencyPos}</div>${Utils.renderAvatarHtml(u.name, u.avatar_url, 45)}
                                     <div class="rank-info"><div class="rank-name">${u.name} ${u.id === user.id ? '<span class="text-gold">(Você)</span>' : ''}</div><div class="rank-agency">Posição Global: ${u.position}º</div></div>
-                                    <div class="rank-score"><div class="rank-score-val">${Utils.formatCurrency(u.totalValue)}</div><div class="rank-score-num">${u.totalNumbers} Nrs</div></div>
+                                    <div class="rank-score text-right">${renderScore(u)}</div>
                                 </div>
                             `).join('')}
                         </div>
@@ -1018,7 +1257,7 @@
                     ${CampaignTimer.render()}
                     <h2 class="section-title"><i class="ti ti-chart-bar"></i> Visão Geral da Campanha</h2>
                     <div class="grid-stats animate-fade">
-                        <div class="card stat-card"><div class="stat-label">Valor Total Vendido</div><div class="stat-value" style="color:var(--gold);">${Utils.formatCurrency(totalSalesVal)}</div></div>
+                        <div class="card stat-card"><div class="stat-label">Valor Total Vendido</div><div class="stat-value" style="color:var(--gold); font-size: clamp(1em, 1.6vw, 1.7em);">${Utils.formatCurrency(totalSalesVal)}</div></div>
                         <div class="card stat-card"><div class="stat-label">Participantes</div><div class="stat-value">${sellers.length}</div></div>
                         <div class="card stat-card"><div class="stat-label">Agências</div><div class="stat-value">${ags.length}</div></div>
                         <div class="card stat-card"><div class="stat-label">Lançamentos (Vendas)</div><div class="stat-value">${sales.length}</div></div>
@@ -1237,6 +1476,49 @@
                     }
                 };
 
+                // FUNÇÕES DO NOVO ACORDEÃO: RANQUEAMENTO E RESET
+                window.saveRankingType = async () => {
+                    if (!Utils.checkPermission()) return;
+                    const btn = document.getElementById('btn-save-ranking'); btn.disabled = true; btn.innerHTML = '<i class="ti ti-loader ti-spin"></i>';
+                    try {
+                        const rankVal = document.getElementById('config-ranking-type').value;
+                        await supabaseClient.from('campaign_settings').update({ ranking_type: rankVal }).eq('id', 1);
+                        Utils.showToast('Ranqueamento atualizado!');
+                    } catch(e) { Utils.showToast('Erro ao salvar', 'error'); }
+                    btn.disabled = false; btn.innerHTML = '<i class="ti ti-device-floppy"></i> Salvar Preferência';
+                };
+
+                window.resetCampaignData = () => {
+                    if (!Utils.checkPermission()) return;
+                    UI.showModal('<i class="ti ti-alert-triangle" style="color:var(--wine)"></i> ZERAR CAMPANHA?', `
+                        <div class="text-center">
+                            <p class="font-bold text-blue-dark">Você tem certeza absoluta?</p>
+                            <p style="font-size:0.9em; margin-top:10px; color:var(--wine);">Isso irá apagar todas as vendas, todos os números da sorte, limpar os resultados de sorteios, remover as datas e zerar as regras dos produtos.</p>
+                            <p style="font-size:0.9em; margin-top:10px;">Os cadastros de Usuários e Agências serão mantidos intactos.</p>
+                            <div class="input-group" style="margin-top:20px;">
+                                <label>Digite "RESETAR" para confirmar:</label>
+                                <input type="text" id="confirm-reset-input" autocomplete="off">
+                            </div>
+                        </div>
+                    `, [
+                        { text: 'Cancelar Segurança', class: 'btn btn-outline', onClick: () => UI.closeModal() },
+                        { text: '<i class="ti ti-trash"></i> Sim, Apagar Tudo', class: 'btn btn-danger', onClick: async () => {
+                            const val = document.getElementById('confirm-reset-input').value;
+                            if(val !== 'RESETAR') return Utils.showToast('Digitação incorreta.', 'error');
+                            
+                            UI.closeModal();
+                            Utils.showToast('Processando reset...', 'success');
+                            
+                            const { error } = await supabaseClient.rpc('reset_campaign_data');
+                            if(error) return Utils.showToast('Erro ao resetar: ' + error.message, 'error');
+                            
+                            await DB.logAction('CAMPAIGN_RESET', `Administrador master resetou todos os dados operacionais da campanha.`, App.currentUser.id);
+                            Utils.showToast('Campanha ZERADA com sucesso!');
+                            UI.navigate('admin-dashboard');
+                        }}
+                    ]);
+                };
+
                 window.openAddProduct = () => {
                     if (!Utils.checkPermission()) return;
                     UI.showModal('<i class="ti ti-package"></i> Novo Produto', `
@@ -1415,6 +1697,28 @@
                 return `
                     <h2 class="section-title"><i class="ti ti-settings"></i> Configurações</h2>
                     <div class="config-grid animate-fade">
+                        
+                        <!-- NOVA SANFONA: RANQUEAMENTO E RESET -->
+                        <div class="accordion">
+                            <div class="accordion-header" onclick="UI.toggleAccordion(this)"><div class="flex items-center gap-2"><i class="ti ti-trophy"></i> Ranqueamento e Reset</div><i class="ti ti-chevron-down"></i></div>
+                            <div class="accordion-content">
+                                <p class="text-blue-dark" style="margin-bottom: 15px;">Configure como os pódios devem ser calculados.</p>
+                                <div class="input-group">
+                                    <label>Tipo de Ranqueamento Principal</label>
+                                    <select id="config-ranking-type">
+                                        <option value="value" ${campDates.ranking_type === 'value' ? 'selected' : ''}>Soma de Valores Vendidos (R$)</option>
+                                        <option value="numbers" ${campDates.ranking_type === 'numbers' ? 'selected' : ''}>Quantidade de Números da Sorte Conquistados</option>
+                                    </select>
+                                </div>
+                                <button id="btn-save-ranking" class="btn btn-sm" onclick="saveRankingType()"><i class="ti ti-device-floppy"></i> Salvar Preferência</button>
+
+                                <hr style="margin: 25px 0; border: 0; border-top: 1px dashed var(--border-glow);">
+                                
+                                <h4 style="color:var(--wine);"><i class="ti ti-alert-triangle"></i> Zona de Perigo (Hard Reset)</h4>
+                                <p style="font-size: 0.9em; margin-bottom: 15px; color:var(--text-muted);">Apaga todas as vendas, números da sorte, sorteios, limpa as datas e zera as regras de todos os produtos. <b>Usuários e Agências são mantidos.</b></p>
+                                <button class="btn btn-danger btn-sm" onclick="resetCampaignData()"><i class="ti ti-trash"></i> Resetar Dados da Campanha</button>
+                            </div>
+                        </div>
 
                         <div class="accordion">
                             <div class="accordion-header" onclick="UI.toggleAccordion(this)"><div class="flex items-center gap-2"><i class="ti ti-calendar"></i> Datas da Campanha</div><i class="ti ti-chevron-down"></i></div>
